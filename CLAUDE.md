@@ -123,7 +123,7 @@ Adapters return normalized `ProductData`/`VariantData` (pydantic) objects and kn
 - Lint and format: ruff
 
 **Frontend** (`frontend/`)
-- Vite + React + TypeScript (strict)
+- Vite + React + TypeScript (strict), linted with oxlint
 - Tailwind CSS + shadcn/ui, with a **dark theme by default**
 - TanStack Query for server state, React Router for routing
 - Recharts for charts
@@ -252,7 +252,7 @@ Each slice is end to end: backend, API, UI, and tests. Claim a slice by assignin
 - Short-lived branches: `feat/<slice>-<thing>`, `fix/<thing>`, `chore/<thing>`.
 - Commit messages follow Conventional Commits (`feat: add shopify adapter`). Do not add AI attribution trailers or mentions to commits or PRs.
 - Track work in GitHub Issues and the Projects board (To Do / In Progress / In Review / Done).
-- CI (phase 5) runs `ruff check`, `ruff format --check`, `pytest`, `tsc --noEmit`, and `eslint`. A PR must be green before merging.
+- CI (phase 5) runs `ruff check`, `ruff format --check`, `pytest`, `npm run typecheck`, and `npm run lint` (oxlint). A PR must be green before merging.
 
 ## Rules
 
