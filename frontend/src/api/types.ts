@@ -74,3 +74,21 @@ export interface Watch {
   active: boolean
   created_at: string
 }
+
+/** GET /products/:id and POST /products/lookup return the product with its store. */
+export interface ProductDetail extends Product {
+  store: Store
+}
+
+/** GET /watches embeds the watched product (null for style-code/keyword watches). */
+export interface WatchListItem extends Watch {
+  product: ProductDetail | null
+}
+
+export interface NewProductWatch {
+  type: "product"
+  product_id: number
+  sizes: string[] | null
+  event_types: EventType[]
+  max_price_cents: number | null
+}
