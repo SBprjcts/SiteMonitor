@@ -1,8 +1,17 @@
 // Typed API client. Each function calls the backend, or the in-memory mock when
 // VITE_USE_MOCKS is not "false".
 
-import { delay, mockDb } from "./mock"
-import type { Store } from "./types"
+import { parseProductUrl } from "@/lib/shopify"
+
+import { delay, mockDb, mockLookupProduct, mockNextId } from "./mock"
+import type {
+  NewProductWatch,
+  ProductDetail,
+  StockEvent,
+  Store,
+  Watch,
+  WatchListItem,
+} from "./types"
 
 export const USE_MOCKS = import.meta.env.VITE_USE_MOCKS !== "false"
 
@@ -69,4 +78,97 @@ function mockAddStore({ domain, name }: { domain: string; name?: string }): Stor
   }
   mockDb.stores.push(store)
   return store
+}
+
+// Products
+
+/** Fetches a product by its store URL so the user can pick sizes to watch. */
+export function lookupProduct(url: string): Promise<ProductDetail> {
+  if (USE_MOCKS) return delay(null, 700).then(() => mockLookup(url))
+  return request("/products/lookup", { method: "POST", body: JSON.stringify({ url }) })
+}
+
+function mockLookup(url: string): ProductDetail {
+  const parsed = parseProductUrl(url)
+  if (!parsed) throw new ApiError(422, "That doesn't look like a Shopify product link")
+  const store = mockDb.stores.find((s) => s.domain === parsed.domain)
+  if (!store) {
+    throw new ApiError(404, `${parsed.domain} isn't a monitored store yet. Add it on the Stores page.`)
+  }
+  if (store.platform !== "shopify") {
+    throw new ApiError(422, `${store.name} isn't supported yet`)
+  }
+  return { ...mockLookupProduct(store, parsed.handle), store }
+}
+
+function mockProductDetail(id: number): ProductDetail {
+  const product = mockDb.products.find((p) => p.id === id)
+  const store = product && mockDb.stores.find((s) => s.id === product.store_id)
+  if (!product || !store) throw new ApiError(404, "Product not found")
+  return { ...product, store }
+}
+
+export function getProduct(id: number): Promise<ProductDetail> {
+  if (USE_MOCKS) return delay(null).then(() => mockProductDetail(id))
+  return request(`/products/${id}`)
+}
+
+/** Newest first. */
+export function listProductEvents(productId: number): Promise<StockEvent[]> {
+  if (USE_MOCKS) {
+    const events = mockDb.events
+      .filter((e) => e.product_id === productId)
+      .sort((a, b) => b.occurred_at.localeCompare(a.occurred_at))
+    return delay(events)
+  }
+  return request(`/products/${productId}/events`)
+}
+
+// Watches
+
+export function listWatches(): Promise<WatchListItem[]> {
+  if (USE_MOCKS) {
+    const items = mockDb.watches
+      .map((w) => ({ ...w, product: w.product_id ? mockProductDetail(w.product_id) : null }))
+      .sort((a, b) => b.created_at.localeCompare(a.created_at))
+    return delay(items)
+  }
+  return request("/watches")
+}
+
+export function createWatch(input: NewProductWatch): Promise<Watch> {
+  if (USE_MOCKS) {
+    const watch: Watch = {
+      id: mockNextId(),
+      query: null,
+      keywords_pos: [],
+      keywords_neg: [],
+      store_ids: null,
+      webhook_id: null,
+      active: true,
+      created_at: new Date().toISOString(),
+      ...input,
+    }
+    mockDb.watches.push(watch)
+    return delay(watch)
+  }
+  return request("/watches", { method: "POST", body: JSON.stringify(input) })
+}
+
+export function updateWatch(id: number, patch: Pick<Watch, "active">): Promise<Watch> {
+  if (USE_MOCKS) {
+    const watch = mockDb.watches.find((w) => w.id === id)
+    if (!watch) return Promise.reject(new ApiError(404, "Watch not found"))
+    Object.assign(watch, patch)
+    return delay(watch)
+  }
+  return request(`/watches/${id}`, { method: "PATCH", body: JSON.stringify(patch) })
+}
+
+export function deleteWatch(id: number): Promise<void> {
+  if (USE_MOCKS) {
+    mockDb.watches = mockDb.watches.filter((w) => w.id !== id)
+    return delay(undefined)
+  }
+  return request(`/watches/${id}`, { method: "DELETE" })
 }
