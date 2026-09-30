@@ -18,6 +18,7 @@ from urllib.parse import urlparse
 import httpx
 
 from app.monitor.adapters.base import ProductData, ProductNotFoundError, VariantData
+from app.stores.domain import normalize_domain
 
 CATALOG_PAGE_SIZE = 250  # Shopify's maximum
 
@@ -28,10 +29,10 @@ def parse_product_url(url: str) -> tuple[str, str]:
     "https://www.nrml.ca/collections/new/products/rugby?variant=1" -> ("nrml.ca", "rugby").
     Raises ValueError if the URL isn't a Shopify product page.
     """
+    domain = normalize_domain(url)  # the one domain rule (see CLAUDE.md Rules)
     parsed = urlparse(url if "://" in url else f"https://{url}")
-    domain = parsed.netloc.lower().removeprefix("www.")
     parts = [p for p in parsed.path.split("/") if p]
-    if not domain or "products" not in parts[:-1]:
+    if "products" not in parts[:-1]:
         raise ValueError(f"not a product URL: {url}")
     handle = parts[parts.index("products") + 1].removesuffix(".js").removesuffix(".json")
     return domain, handle

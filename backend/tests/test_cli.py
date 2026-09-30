@@ -32,6 +32,7 @@ class FakeAdapter:
         ("https://www.nrml.ca/collections/new/products/rugby?variant=1", ("nrml.ca", "rugby")),
         ("ca.kith.com/products/gel-lyte-iii.js", ("ca.kith.com", "gel-lyte-iii")),
         ("https://CA.KITH.COM/products/gel-lyte-iii/", ("ca.kith.com", "gel-lyte-iii")),
+        ("https://www.nrml.ca:443/products/rugby", ("nrml.ca", "rugby")),
     ],
 )
 def test_parse_product_url(url, expected):
@@ -39,7 +40,13 @@ def test_parse_product_url(url, expected):
 
 
 @pytest.mark.parametrize(
-    "url", ["https://ca.kith.com/", "https://ca.kith.com/products", "nonsense"]
+    "url",
+    [
+        "https://ca.kith.com/",
+        "https://ca.kith.com/products",
+        "nonsense",
+        "http://127.0.0.1/products/x",
+    ],
 )
 def test_parse_product_url_rejects_non_product_urls(url):
     with pytest.raises(ValueError):
