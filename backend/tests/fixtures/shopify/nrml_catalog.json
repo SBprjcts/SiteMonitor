@@ -1,0 +1,362 @@
+{
+  "products": [
+    {
+      "id": 8411832516674,
+      "title": "STRIPED RUGBY SHIRT BLUE",
+      "handle": "striped-hibiscus-sweater-black-in-progress-copy",
+      "body_html": "<ul>\n<li>Relaxed fit rugby shirt</li>\n<li>12.4oz striped cotton jersey</li>\n<li>Cotton twill collar</li>\n<li>Rubber buttons with covered placket</li>\n<li>Exposed button at neckline</li>\n<li>Ribbed cuffs</li>\n<li>Side vents</li>\n<li>Straight hem</li>\n<li>Stüssy smooth stock label at exterior back neck</li>\n<li>Material: 100% cotton</li>\n<li>Unisex</li>\n<li>Imported</li>\n</ul>\n<p>Style 1140372-BLUE</p>",
+      "published_at": "2026-09-29T16:26:23-04:00",
+      "created_at": "2026-09-23T16:25:52-04:00",
+      "updated_at": "2026-09-29T23:57:05-04:00",
+      "vendor": "STUSSY",
+      "product_type": "MENS SOFTGOODS",
+      "tags": [
+        "C26",
+        "FShippingExcluded",
+        "Mens Softgoods",
+        "New Arrivals",
+        "SEPTEMBER2026"
+      ],
+      "variants": [
+        {
+          "id": 45263214575682,
+          "title": "M / BLUE / 1140372-BLUE",
+          "option1": "M",
+          "option2": "BLUE",
+          "option3": "1140372-BLUE",
+          "sku": "195292734969",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "160.00",
+          "grams": 0,
+          "compare_at_price": "160.00",
+          "position": 1,
+          "product_id": 8411832516674,
+          "created_at": "2026-09-23T16:25:52-04:00",
+          "updated_at": "2026-09-29T23:57:05-04:00"
+        },
+        {
+          "id": 45263214608450,
+          "title": "L / BLUE / 1140372-BLUE",
+          "option1": "L",
+          "option2": "BLUE",
+          "option3": "1140372-BLUE",
+          "sku": "195292734976",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "160.00",
+          "grams": 0,
+          "compare_at_price": "160.00",
+          "position": 2,
+          "product_id": 8411832516674,
+          "created_at": "2026-09-23T16:25:52-04:00",
+          "updated_at": "2026-09-29T23:57:05-04:00"
+        },
+        {
+          "id": 45263214641218,
+          "title": "XL / BLUE / 1140372-BLUE",
+          "option1": "XL",
+          "option2": "BLUE",
+          "option3": "1140372-BLUE",
+          "sku": "195292734983",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "160.00",
+          "grams": 0,
+          "compare_at_price": "160.00",
+          "position": 3,
+          "product_id": 8411832516674,
+          "created_at": "2026-09-23T16:25:52-04:00",
+          "updated_at": "2026-09-29T23:57:05-04:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 37508122083394,
+          "created_at": "2026-09-23T16:30:43-04:00",
+          "position": 1,
+          "updated_at": "2026-09-23T16:30:44-04:00",
+          "product_id": 8411832516674,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/1334/3831/files/1140372-BLUE.png?v=1790195444",
+          "width": 1080,
+          "height": 1080
+        },
+        {
+          "id": 37508145709122,
+          "created_at": "2026-09-23T16:36:25-04:00",
+          "position": 2,
+          "updated_at": "2026-09-23T16:36:27-04:00",
+          "product_id": 8411832516674,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/1334/3831/files/1140372-BLUE55.png?v=1790195787",
+          "width": 1080,
+          "height": 1080
+        }
+      ],
+      "options": [
+        {
+          "name": "SIZE",
+          "position": 1,
+          "values": [
+            "M",
+            "L",
+            "XL"
+          ]
+        },
+        {
+          "name": "COLOR",
+          "position": 2,
+          "values": [
+            "BLUE"
+          ]
+        },
+        {
+          "name": "STYLE",
+          "position": 3,
+          "values": [
+            "1140372-BLUE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 8406918627394,
+      "title": "FADED GRAPHIC FLEECE PANT WASHED NAVY",
+      "handle": "side-stripe-track-pant-black-in-progress",
+      "body_html": "<ul>\n<li>Relaxed fit fleece pant</li>\n<li>Heavyweight 14.75oz cotton blend</li>\n<li>Elastic waistband with interior drawcord</li>\n<li>Side seam pockets</li>\n<li>Stüssy faded arch logo at left leg</li>\n<li>Side patch pockets with concealed snaps</li>\n<li>Rear patch pocket</li>\n<li>Concealed webbing drawstrings at hem</li>\n<li>Unisex</li>\n<li>Inseam: 30\" / 76cm (size M)</li>\n<li>Leg opening circumference: 19\" / 48.3cm (size M)</li>\n<li>Material: 83% cotton / 17% polyester</li>\n<li>Imported</li>\n</ul>\n<p>Style 116667-WANV</p>",
+      "published_at": "2026-09-29T16:19:51-04:00",
+      "created_at": "2026-09-19T17:20:27-04:00",
+      "updated_at": "2026-09-29T23:57:05-04:00",
+      "vendor": "STUSSY",
+      "product_type": "MENS SOFTGOODS",
+      "tags": [
+        "C26",
+        "FShippingExcluded",
+        "Mens Softgoods",
+        "New Arrivals",
+        "SEPTEMBER2026"
+      ],
+      "variants": [
+        {
+          "id": 45244286763074,
+          "title": "S / WASHED NAVY / 116667-WANV",
+          "option1": "S",
+          "option2": "WASHED NAVY",
+          "option3": "116667-WANV",
+          "sku": "195292772862",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "180.00",
+          "grams": 0,
+          "compare_at_price": "180.00",
+          "position": 1,
+          "product_id": 8406918627394,
+          "created_at": "2026-09-19T17:20:27-04:00",
+          "updated_at": "2026-09-29T23:57:05-04:00"
+        },
+        {
+          "id": 45244286795842,
+          "title": "M / WASHED NAVY / 116667-WANV",
+          "option1": "M",
+          "option2": "WASHED NAVY",
+          "option3": "116667-WANV",
+          "sku": "195292772879",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "180.00",
+          "grams": 0,
+          "compare_at_price": "180.00",
+          "position": 2,
+          "product_id": 8406918627394,
+          "created_at": "2026-09-19T17:20:27-04:00",
+          "updated_at": "2026-09-29T23:57:05-04:00"
+        },
+        {
+          "id": 45244286828610,
+          "title": "L / WASHED NAVY / 116667-WANV",
+          "option1": "L",
+          "option2": "WASHED NAVY",
+          "option3": "116667-WANV",
+          "sku": "195292772886",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "180.00",
+          "grams": 0,
+          "compare_at_price": "180.00",
+          "position": 3,
+          "product_id": 8406918627394,
+          "created_at": "2026-09-19T17:20:27-04:00",
+          "updated_at": "2026-09-29T23:57:05-04:00"
+        },
+        {
+          "id": 45244286861378,
+          "title": "XL / WASHED NAVY / 116667-WANV",
+          "option1": "XL",
+          "option2": "WASHED NAVY",
+          "option3": "116667-WANV",
+          "sku": "195292772893",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "180.00",
+          "grams": 0,
+          "compare_at_price": "180.00",
+          "position": 4,
+          "product_id": 8406918627394,
+          "created_at": "2026-09-19T17:20:27-04:00",
+          "updated_at": "2026-09-29T23:57:05-04:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 37508162322498,
+          "created_at": "2026-09-23T16:41:26-04:00",
+          "position": 1,
+          "updated_at": "2026-09-23T16:41:27-04:00",
+          "product_id": 8406918627394,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/1334/3831/files/116667-WANV.png?v=1790196087",
+          "width": 1080,
+          "height": 1080
+        },
+        {
+          "id": 37508162289730,
+          "created_at": "2026-09-23T16:41:26-04:00",
+          "position": 2,
+          "updated_at": "2026-09-23T16:41:27-04:00",
+          "product_id": 8406918627394,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/1334/3831/files/116667-WANV1.png?v=1790196087",
+          "width": 1080,
+          "height": 1080
+        }
+      ],
+      "options": [
+        {
+          "name": "SIZE",
+          "position": 1,
+          "values": [
+            "S",
+            "M",
+            "L",
+            "XL"
+          ]
+        },
+        {
+          "name": "COLOR",
+          "position": 2,
+          "values": [
+            "WASHED NAVY"
+          ]
+        },
+        {
+          "name": "STYLE",
+          "position": 3,
+          "values": [
+            "116667-WANV"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 8411711897666,
+      "title": "BRUSHED OUT STOCK SKULLCAP BLACK",
+      "handle": "stock-cuff-beanie-heather-brown-copy",
+      "body_html": "<ul>\n<li>Brushed knit skullcap beanie</li>\n<li>6-point top construction</li>\n<li>Jacquard Stüssy stock logo</li>\n<li>One size</li>\n<li>Unisex</li>\n<li>Material: 100% acrylic</li>\n<li>Imported</li>\n</ul>\n<p>Style 1321191-BLACK</p>",
+      "published_at": "2026-09-29T14:58:35-04:00",
+      "created_at": "2026-09-23T15:29:10-04:00",
+      "updated_at": "2026-09-29T23:57:05-04:00",
+      "vendor": "STUSSY",
+      "product_type": "BEANIES",
+      "tags": [
+        "BEANIES BIN 001",
+        "C26",
+        "FShippingExcluded",
+        "New Arrivals",
+        "SEPTEMBER2026"
+      ],
+      "variants": [
+        {
+          "id": 45263025143874,
+          "title": "OS / BLACK / 1321191-BLACK",
+          "option1": "OS",
+          "option2": "BLACK",
+          "option3": "1321191-BLACK",
+          "sku": "195292427649",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "60.00",
+          "grams": 0,
+          "compare_at_price": "60.00",
+          "position": 1,
+          "product_id": 8411711897666,
+          "created_at": "2026-09-23T15:29:10-04:00",
+          "updated_at": "2026-09-29T23:57:05-04:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 37507691053122,
+          "created_at": "2026-09-23T15:33:39-04:00",
+          "position": 1,
+          "updated_at": "2026-09-23T15:33:41-04:00",
+          "product_id": 8411711897666,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/1334/3831/files/1321191-BLACK.png?v=1790192021",
+          "width": 1080,
+          "height": 1080
+        },
+        {
+          "id": 37507691020354,
+          "created_at": "2026-09-23T15:33:39-04:00",
+          "position": 2,
+          "updated_at": "2026-09-23T15:33:41-04:00",
+          "product_id": 8411711897666,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/1334/3831/files/1321191-BLACK1.png?v=1790192021",
+          "width": 1080,
+          "height": 1080
+        }
+      ],
+      "options": [
+        {
+          "name": "SIZE",
+          "position": 1,
+          "values": [
+            "OS"
+          ]
+        },
+        {
+          "name": "COLOR",
+          "position": 2,
+          "values": [
+            "BLACK"
+          ]
+        },
+        {
+          "name": "STYLE",
+          "position": 3,
+          "values": [
+            "1321191-BLACK"
+          ]
+        }
+      ]
+    }
+  ]
+}
