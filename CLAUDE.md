@@ -174,7 +174,7 @@ run.ps1                     one-command local start on Windows
 
 | Table | Key columns |
 |---|---|
-| `users` | id, email (unique), password_hash, created_at |
+| `users` | id, email (unique), password_hash, is_admin (default false), created_at |
 | `sessions` | id (token), user_id, expires_at |
 | `stores` | id, name, domain (unique), platform (`shopify` \| `shopify_hydrogen`), enabled, hot_interval_s, sweep_interval_s, status (`ok` \| `degraded` \| `blocked`), last_ok_at, consecutive_errors |
 | `products` | id, store_id, external_id, handle, title, vendor, image_url, url, search_text, first_seen_at, last_seen_at. Unique on (store_id, external_id) |
@@ -220,7 +220,7 @@ Users can add any other Shopify store in the UI. The backend validates it by req
 
   In all three tabs the user picks the event types, a webhook, and optionally a max price.
 - **Product detail:** size-by-size stock grid, event timeline, time-to-sellout per size
-- **Stores:** health status, enable/disable, add a custom Shopify store
+- **Stores:** health status, add a custom Shopify store, and enable/disable (admins only; other users don't see the toggle)
 - **Settings:** manage Discord webhooks, with a "Send test alert" button
 - **Analytics** (later): restocks per store, sellout speed by size, detection latency
 
@@ -243,7 +243,7 @@ Each slice is end to end: backend, API, UI, and tests. Claim a slice by assignin
 | B. Product watches | URL → size picker, restock/sold-out alerts, Product detail page |
 | C. Style code + keywords | normalization, matcher, keyword preview, new-product alerts |
 | D. Notifier + webhooks | Discord embeds, queue, dedupe/cooldown, Settings page, test alert |
-| E. Auth | register/login/logout, sessions, per-user scoping on every query |
+| E. Auth | register/login/logout, sessions, per-user scoping on every query, `is_admin` + admin-only store toggle |
 | F. Feed + analytics | SSE stream, Dashboard feed, charts |
 | G. Price drops | price diff events, alert formatting |
 
@@ -260,6 +260,7 @@ Each slice is end to end: backend, API, UI, and tests. Claim a slice by assignin
 - **Never commit `.env`** or real webhook URLs. Add new settings to `.env.example` with a placeholder.
 - **Tests never hit live stores or Discord.** Use recorded JSON in `backend/tests/fixtures/` and mock with respx.
 - Every user-owned query must filter by `user_id`. There must be no cross-user data leaks.
+- **Stores are shared, so only admins can enable or disable one** (`PATCH /api/stores/{id}` returns 403 for everyone else). Any logged-in user can add a store: the probe checks it first, and adding one doesn't affect other users. Until auth exists (slice E), the toggle is unprotected.
 - All outbound HTTP to stores goes through the rate limiter. No direct `httpx.get` in feature code.
 - Monitor code must not import API code (see Process model).
 - **One domain rule everywhere:** store domains are lowercase hostnames without `www.` (`https://www.NRML.ca/x` → `nrml.ca`). Backend code uses `normalize_domain()` from `app/stores/domain.py`; the frontend mirrors it in `normalizeDomain()`. Otherwise the same store can be added twice.
