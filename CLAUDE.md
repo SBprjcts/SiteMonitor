@@ -275,6 +275,7 @@ uv run alembic upgrade head               # migrate DB
 uv run python -m app.seed                 # seed stores
 uv run uvicorn app.main:app --reload      # API + monitor on :8000
 uv run python -m app.monitor              # monitor only
+uv run python -m app.monitor --once <url>   # check one product once and print changes
 uv run pytest                             # tests
 uv run ruff check . ; uv run ruff format .
 
