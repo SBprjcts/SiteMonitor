@@ -49,7 +49,7 @@ def upgrade() -> None:
     sa.Column('last_seen_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['store_id'], ['stores.id'], name=op.f('fk_products_store_id_stores')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_products')),
-    sa.UniqueConstraint('store_id', 'external_id', name=op.f('uq_products_store_id'))
+    sa.UniqueConstraint('store_id', 'external_id', name=op.f('uq_products_store_id_external_id'))
     )
     op.create_table('variants',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -62,7 +62,7 @@ def upgrade() -> None:
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['product_id'], ['products.id'], name=op.f('fk_variants_product_id_products')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_variants')),
-    sa.UniqueConstraint('product_id', 'external_id', name=op.f('uq_variants_product_id'))
+    sa.UniqueConstraint('product_id', 'external_id', name=op.f('uq_variants_product_id_external_id'))
     )
     op.create_table('events',
     sa.Column('id', sa.Integer(), nullable=False),
