@@ -25,16 +25,28 @@ export function formatPrice(cents: number): string {
 }
 
 /**
- * Accepts a pasted store URL or domain ("https://www.kith.com/collections/x")
- * and returns the bare hostname ("www.kith.com"), or null if it isn't one.
+ * Accepts a pasted store URL or domain ("https://www.kith.com/collections/x") and returns
+ * the bare hostname without "www." ("kith.com"), or null if it isn't a domain.
+ * Mirrors normalize_domain() in backend/app/stores/domain.py: both sides must agree,
+ * or the same store could be added twice.
  */
 export function normalizeDomain(input: string): string | null {
   const trimmed = input.trim().toLowerCase()
   if (!trimmed) return null
+  let hostname: string
   try {
-    const url = new URL(trimmed.includes("://") ? trimmed : `https://${trimmed}`)
-    return url.hostname.includes(".") ? url.hostname : null
+    hostname = new URL(trimmed.includes("://") ? trimmed : `https://${trimmed}`).hostname
   } catch {
     return null
   }
+  // IPv6 hostnames have no dots, so this also rejects them.
+  if (!hostname.includes(".") || /^\d+(\.\d+){3}$/.test(hostname)) return null
+  return stripWww(hostname)
+}
+
+/** "www.nrml.ca" -> "nrml.ca", but "www.com" stays as is. */
+export function stripWww(hostname: string): string {
+  return hostname.startsWith("www.") && hostname.slice(4).includes(".")
+    ? hostname.slice(4)
+    : hostname
 }

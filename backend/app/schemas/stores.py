@@ -1,9 +1,9 @@
 from datetime import datetime
-from urllib.parse import urlsplit
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.db.models import Platform, StoreStatus
+from app.stores.domain import normalize_domain
 
 
 class StoreOut(BaseModel):
@@ -23,19 +23,6 @@ class StoreOut(BaseModel):
 
 class StoreUpdate(BaseModel):
     enabled: bool
-
-
-def normalize_domain(value: str) -> str:
-    """Turns a pasted URL or domain into a bare lowercase hostname.
-
-    "https://www.Kith.com/collections/x" -> "www.kith.com". Mirrors normalizeDomain()
-    in frontend/src/lib/format.ts.
-    """
-    trimmed = value.strip().lower()
-    hostname = urlsplit(trimmed if "://" in trimmed else f"https://{trimmed}").hostname
-    if not hostname or "." not in hostname:
-        raise ValueError("Enter a store URL or domain, like nrml.ca")
-    return hostname
 
 
 class StoreCreate(BaseModel):
