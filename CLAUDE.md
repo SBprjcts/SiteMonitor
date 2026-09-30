@@ -262,6 +262,7 @@ Each slice is end to end: backend, API, UI, and tests. Claim a slice by assignin
 - All outbound HTTP to stores goes through the rate limiter. No direct `httpx.get` in feature code.
 - Monitor code must not import API code (see Process model).
 - Schema changes require an Alembic migration in the same PR.
+- Relationships are `lazy="raise"`: load them explicitly with `selectinload()` in the query, or accessing them raises.
 - Both collaborators work on Windows. Scripts and docs use PowerShell-friendly commands, and paths are handled with `pathlib`.
 
 ## Common commands
