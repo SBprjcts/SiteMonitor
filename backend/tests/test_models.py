@@ -2,7 +2,8 @@ from datetime import UTC, datetime, timedelta, timezone
 
 import pytest
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, StatementError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError, StatementError
+from sqlalchemy.orm import selectinload
 
 from app.db.models import Event, EventType, Product, Store, StoreStatus, Variant
 
@@ -101,3 +102,16 @@ async def test_invalid_event_type_is_rejected(session):
     session.add(Event(store_id=store.id, product_id=product.id, type="exploded"))
     with pytest.raises(StatementError):
         await session.commit()
+
+
+async def test_relationships_must_be_loaded_explicitly(session):
+    session.add(make_product(make_store()))
+    await session.commit()
+    session.expire_all()
+
+    store = await session.scalar(select(Store))
+    with pytest.raises(InvalidRequestError, match="lazy='raise'"):
+        _ = store.products
+
+    loaded = await session.scalar(select(Store).options(selectinload(Store.products)))
+    assert len(loaded.products) == 1

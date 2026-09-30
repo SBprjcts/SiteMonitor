@@ -13,7 +13,10 @@ def alembic_config(db_path: Path) -> Config:
 
 
 def test_migrations_match_models(tmp_path):
-    """Fails if someone changed models.py without adding a migration."""
+    """Fails if someone changed models.py without adding a migration.
+
+    This includes renamed constraints, since they're compared by name.
+    """
     config = alembic_config(tmp_path / "test.db")
     command.upgrade(config, "head")
     command.check(config)
