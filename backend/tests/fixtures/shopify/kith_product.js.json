@@ -1,0 +1,1106 @@
+{
+  "id": 8286820237440,
+  "title": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize",
+  "handle": "nkiq5365-600",
+  "description": "<p>Air Bakin High SP silhouette</p>\n<p>Mesh upper</p>\n<p>Synthetic nubuck overlays</p>\n<p>Padded collar</p>\n<p>Nike Air-branded patch on the tongue</p>\n<p>Mini Swoosh on the toe box, lateral side, and side collar</p>\n<p>Rope laces</p>\n<p>Tongue and heel pull</p>\n<p>Nike Air branding on the heel</p>\n<p>Max Air cushioning </p>\n<p>Rubber outsole</p>\n<p> </p>\n<p>Style: <meta charset=\"utf-8\"><span>nkiq5365-600</span></p>\n<p>Color: Black / Varsity Red / White / Varsity Maize</p>\n<p>Material: Mesh / Synthetic Nubuck</p>",
+  "published_at": "2026-09-29T13:00:00-04:00",
+  "created_at": "2026-09-28T11:53:23-04:00",
+  "vendor": "Nike",
+  "type": "High Top Sneakers",
+  "tags": [
+    "092826weeklyfw",
+    "092926",
+    "092926fw",
+    "final-sale",
+    "flow_tagged:types",
+    "footwear",
+    "high top sneakers",
+    "limit-quantity-two",
+    "mens",
+    "new-arrivals",
+    "Nike",
+    "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize",
+    "nkiq5365",
+    "nkiq5365-600",
+    "primary",
+    "sneaker",
+    "sneakers",
+    "square footwear"
+  ],
+  "price": 21000,
+  "price_min": 21000,
+  "price_max": 21000,
+  "available": true,
+  "price_varies": false,
+  "compare_at_price": 0,
+  "compare_at_price_min": 0,
+  "compare_at_price_max": 0,
+  "compare_at_price_varies": false,
+  "variants": [
+    {
+      "id": 45144931958912,
+      "title": "3",
+      "option1": "3",
+      "option2": null,
+      "option3": null,
+      "sku": "98297375",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 3",
+      "public_title": "3",
+      "options": [
+        "3"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "98297375",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144931991680,
+      "title": "3.5",
+      "option1": "3.5",
+      "option2": null,
+      "option3": null,
+      "sku": "199777323488",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 3.5",
+      "public_title": "3.5",
+      "options": [
+        "3.5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777323488",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932024448,
+      "title": "4",
+      "option1": "4",
+      "option2": null,
+      "option3": null,
+      "sku": "199777329619",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 4",
+      "public_title": "4",
+      "options": [
+        "4"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777329619",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932057216,
+      "title": "4.5",
+      "option1": "4.5",
+      "option2": null,
+      "option3": null,
+      "sku": "199777327387",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 4.5",
+      "public_title": "4.5",
+      "options": [
+        "4.5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777327387",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932089984,
+      "title": "5",
+      "option1": "5",
+      "option2": null,
+      "option3": null,
+      "sku": "199777341185",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 5",
+      "public_title": "5",
+      "options": [
+        "5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777341185",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932122752,
+      "title": "5.5",
+      "option1": "5.5",
+      "option2": null,
+      "option3": null,
+      "sku": "199777328896",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 5.5",
+      "public_title": "5.5",
+      "options": [
+        "5.5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777328896",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932155520,
+      "title": "6",
+      "option1": "6",
+      "option2": null,
+      "option3": null,
+      "sku": "199777331391",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 6",
+      "public_title": "6",
+      "options": [
+        "6"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777331391",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932188288,
+      "title": "6.5",
+      "option1": "6.5",
+      "option2": null,
+      "option3": null,
+      "sku": "199777333111",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 6.5",
+      "public_title": "6.5",
+      "options": [
+        "6.5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777333111",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932221056,
+      "title": "7",
+      "option1": "7",
+      "option2": null,
+      "option3": null,
+      "sku": "199777325567",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 7",
+      "public_title": "7",
+      "options": [
+        "7"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777325567",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932253824,
+      "title": "7.5",
+      "option1": "7.5",
+      "option2": null,
+      "option3": null,
+      "sku": "199777338345",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 7.5",
+      "public_title": "7.5",
+      "options": [
+        "7.5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777338345",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932286592,
+      "title": "8",
+      "option1": "8",
+      "option2": null,
+      "option3": null,
+      "sku": "199777326823",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": true,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 8",
+      "public_title": "8",
+      "options": [
+        "8"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777326823",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932319360,
+      "title": "8.5",
+      "option1": "8.5",
+      "option2": null,
+      "option3": null,
+      "sku": "199777336808",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": true,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 8.5",
+      "public_title": "8.5",
+      "options": [
+        "8.5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777336808",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932352128,
+      "title": "9",
+      "option1": "9",
+      "option2": null,
+      "option3": null,
+      "sku": "199777331414",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": true,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 9",
+      "public_title": "9",
+      "options": [
+        "9"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777331414",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932384896,
+      "title": "9.5",
+      "option1": "9.5",
+      "option2": null,
+      "option3": null,
+      "sku": "199777325604",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 9.5",
+      "public_title": "9.5",
+      "options": [
+        "9.5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777325604",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932417664,
+      "title": "10",
+      "option1": "10",
+      "option2": null,
+      "option3": null,
+      "sku": "199777336037",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 10",
+      "public_title": "10",
+      "options": [
+        "10"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777336037",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932450432,
+      "title": "10.5",
+      "option1": "10.5",
+      "option2": null,
+      "option3": null,
+      "sku": "199777341772",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 10.5",
+      "public_title": "10.5",
+      "options": [
+        "10.5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777341772",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932483200,
+      "title": "11",
+      "option1": "11",
+      "option2": null,
+      "option3": null,
+      "sku": "199777322979",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 11",
+      "public_title": "11",
+      "options": [
+        "11"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777322979",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932515968,
+      "title": "11.5",
+      "option1": "11.5",
+      "option2": null,
+      "option3": null,
+      "sku": "199777335665",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 11.5",
+      "public_title": "11.5",
+      "options": [
+        "11.5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777335665",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932548736,
+      "title": "12",
+      "option1": "12",
+      "option2": null,
+      "option3": null,
+      "sku": "199777330165",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 12",
+      "public_title": "12",
+      "options": [
+        "12"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777330165",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932581504,
+      "title": "12.5",
+      "option1": "12.5",
+      "option2": null,
+      "option3": null,
+      "sku": "199777323501",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 12.5",
+      "public_title": "12.5",
+      "options": [
+        "12.5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777323501",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932614272,
+      "title": "13",
+      "option1": "13",
+      "option2": null,
+      "option3": null,
+      "sku": "199777337928",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 13",
+      "public_title": "13",
+      "options": [
+        "13"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777337928",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932647040,
+      "title": "13.5",
+      "option1": "13.5",
+      "option2": null,
+      "option3": null,
+      "sku": "98297396",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 13.5",
+      "public_title": "13.5",
+      "options": [
+        "13.5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "98297396",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932679808,
+      "title": "14",
+      "option1": "14",
+      "option2": null,
+      "option3": null,
+      "sku": "199777343301",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 14",
+      "public_title": "14",
+      "options": [
+        "14"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777343301",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932712576,
+      "title": "14.5",
+      "option1": "14.5",
+      "option2": null,
+      "option3": null,
+      "sku": "98297398",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 14.5",
+      "public_title": "14.5",
+      "options": [
+        "14.5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "98297398",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932745344,
+      "title": "15",
+      "option1": "15",
+      "option2": null,
+      "option3": null,
+      "sku": "199777327097",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 15",
+      "public_title": "15",
+      "options": [
+        "15"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777327097",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932778112,
+      "title": "15.5",
+      "option1": "15.5",
+      "option2": null,
+      "option3": null,
+      "sku": "98297400",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 15.5",
+      "public_title": "15.5",
+      "options": [
+        "15.5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "98297400",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932810880,
+      "title": "16",
+      "option1": "16",
+      "option2": null,
+      "option3": null,
+      "sku": "199777693536",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 16",
+      "public_title": "16",
+      "options": [
+        "16"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777693536",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932843648,
+      "title": "16.5",
+      "option1": "16.5",
+      "option2": null,
+      "option3": null,
+      "sku": "98297402",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 16.5",
+      "public_title": "16.5",
+      "options": [
+        "16.5"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "98297402",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932876416,
+      "title": "17",
+      "option1": "17",
+      "option2": null,
+      "option3": null,
+      "sku": "199777655176",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 17",
+      "public_title": "17",
+      "options": [
+        "17"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777655176",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    },
+    {
+      "id": 45144932909184,
+      "title": "18",
+      "option1": "18",
+      "option2": null,
+      "option3": null,
+      "sku": "199777633402",
+      "requires_shipping": true,
+      "taxable": true,
+      "featured_image": null,
+      "available": false,
+      "name": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize - 18",
+      "public_title": "18",
+      "options": [
+        "18"
+      ],
+      "price": 21000,
+      "weight": 1361,
+      "compare_at_price": 0,
+      "inventory_management": "shopify",
+      "barcode": "199777633402",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "quantity_price_breaks": [],
+      "requires_selling_plan": false,
+      "selling_plan_allocations": []
+    }
+  ],
+  "images": [
+    "//cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHSRH000-2000.jpg?v=1790610808",
+    "//cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHCFH001-2000.jpg?v=1790610809",
+    "//cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHCTH001-2000.jpg?v=1790610808",
+    "//cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHCBH000-2000.jpg?v=1790610808",
+    "//cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHSYD001-2000.jpg?v=1790610808",
+    "//cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHSYD002-2000.jpg?v=1790610809",
+    "//cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHSUH000-2000.jpg?v=1790610808"
+  ],
+  "featured_image": "//cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHSRH000-2000.jpg?v=1790610808",
+  "options": [
+    {
+      "name": "Size",
+      "position": 1,
+      "values": [
+        "3",
+        "3.5",
+        "4",
+        "4.5",
+        "5",
+        "5.5",
+        "6",
+        "6.5",
+        "7",
+        "7.5",
+        "8",
+        "8.5",
+        "9",
+        "9.5",
+        "10",
+        "10.5",
+        "11",
+        "11.5",
+        "12",
+        "12.5",
+        "13",
+        "13.5",
+        "14",
+        "14.5",
+        "15",
+        "15.5",
+        "16",
+        "16.5",
+        "17",
+        "18"
+      ]
+    }
+  ],
+  "url": "/products/nkiq5365-600",
+  "media": [
+    {
+      "alt": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize",
+      "id": 33964855525504,
+      "position": 1,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "https://cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHSRH000-2000.jpg?v=1790610808"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHSRH000-2000.jpg?v=1790610808",
+      "width": 2000
+    },
+    {
+      "alt": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize",
+      "id": 33964855558272,
+      "position": 2,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "https://cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHCFH001-2000.jpg?v=1790610809"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHCFH001-2000.jpg?v=1790610809",
+      "width": 2000
+    },
+    {
+      "alt": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize",
+      "id": 33964855591040,
+      "position": 3,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "https://cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHCTH001-2000.jpg?v=1790610808"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHCTH001-2000.jpg?v=1790610808",
+      "width": 2000
+    },
+    {
+      "alt": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize",
+      "id": 33964855623808,
+      "position": 4,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "https://cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHCBH000-2000.jpg?v=1790610808"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHCBH000-2000.jpg?v=1790610808",
+      "width": 2000
+    },
+    {
+      "alt": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize",
+      "id": 33964855656576,
+      "position": 5,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "https://cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHSYD001-2000.jpg?v=1790610808"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHSYD001-2000.jpg?v=1790610808",
+      "width": 2000
+    },
+    {
+      "alt": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize",
+      "id": 33964855689344,
+      "position": 6,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "https://cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHSYD002-2000.jpg?v=1790610809"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHSYD002-2000.jpg?v=1790610809",
+      "width": 2000
+    },
+    {
+      "alt": "Nike Air Bakin High SP - Black / Varsity Red / White / Varsity Maize",
+      "id": 33964855722112,
+      "position": 7,
+      "preview_image": {
+        "aspect_ratio": 1.0,
+        "height": 2000,
+        "width": 2000,
+        "src": "https://cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHSUH000-2000.jpg?v=1790610808"
+      },
+      "aspect_ratio": 1.0,
+      "height": 2000,
+      "media_type": "image",
+      "src": "https://cdn.shopify.com/s/files/1/0675/6836/9984/files/AURORA_IQ5365-600_PHSUH000-2000.jpg?v=1790610808",
+      "width": 2000
+    }
+  ],
+  "requires_selling_plan": false,
+  "selling_plan_groups": []
+}

@@ -99,10 +99,10 @@ Routes each event to the active watches that match it:
 ### Adapters (`monitor/adapters/`)
 ```python
 class StoreAdapter(Protocol):
-    async def fetch_product(self, store: Store, handle: str) -> ProductData: ...
-    async def fetch_catalog_page(self, store: Store, page: int) -> list[ProductData]: ...
+    async def fetch_product(self, domain: str, handle: str) -> ProductData: ...
+    async def fetch_catalog_page(self, domain: str, page: int) -> list[ProductData]: ...
 ```
-Adapters return normalized `ProductData`/`VariantData` (pydantic) objects and know nothing about the DB.
+Adapters return normalized `ProductData`/`VariantData` (pydantic) objects and know nothing about the DB, so they take a plain `domain`, not a `Store` row. All requests go through the shared client from `monitor/http.py`.
 - `shopify.py`: the only adapter for now.
 - `shopify_hydrogen.py` (later): for headless Shopify stores like Haven, via the public Storefront API.
 - `amazon.py` (much later).
