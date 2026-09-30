@@ -1,13 +1,13 @@
 import asyncio
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from alembic import context
 from app.config import get_settings
-from app.db.models import Base
+from app.db.models import Base, UTCDateTime
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -19,14 +19,21 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # The DB URL comes from Settings (DATABASE_URL), not alembic.ini.
-config.set_main_option("sqlalchemy.url", get_settings().database_url.replace("%", "%%"))
+# Tests pass their own URL, which takes precedence.
+if not config.get_main_option("sqlalchemy.url"):
+    config.set_main_option("sqlalchemy.url", get_settings().database_url.replace("%", "%%"))
 
 target_metadata = Base.metadata
 
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
+
+def render_item(type_, obj, autogen_context):
+    """Writes our custom column types into migrations as plain SQLAlchemy types.
+
+    Migrations then don't import app code, which may change after they're written.
+    """
+    if type_ == "type" and isinstance(obj, UTCDateTime):
+        return "sa.DateTime(timezone=True)"
+    return False  # use Alembic's default rendering
 
 
 def run_migrations_offline() -> None:
@@ -48,6 +55,7 @@ def run_migrations_offline() -> None:
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
         render_as_batch=True,
+        render_item=render_item,
     )
 
     with context.begin_transaction():
@@ -56,7 +64,12 @@ def run_migrations_offline() -> None:
 
 def do_run_migrations(connection: Connection) -> None:
     # Batch mode lets SQLite handle ALTER TABLE changes (it rebuilds the table).
-    context.configure(connection=connection, target_metadata=target_metadata, render_as_batch=True)
+    context.configure(
+        connection=connection,
+        target_metadata=target_metadata,
+        render_as_batch=True,
+        render_item=render_item,
+    )
 
     with context.begin_transaction():
         context.run_migrations()

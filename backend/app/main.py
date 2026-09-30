@@ -14,13 +14,18 @@ FRONTEND_DIST = REPO_ROOT / "frontend" / "dist"
 
 
 class SPAStaticFiles(StaticFiles):
-    """Serves the built frontend, falling back to index.html for client-side routes."""
+    """Serves the built frontend, falling back to index.html for client-side routes.
+
+    Unknown /api/... paths stay a 404, so a mistyped endpoint doesn't return HTML.
+    """
 
     async def get_response(self, path, scope):
         try:
             return await super().get_response(path, scope)
         except StarletteHTTPException as exc:
-            if exc.status_code != 404:
+            # On Windows the path arrives with backslashes ("api\\watchs").
+            first_segment = path.replace("\\", "/").split("/")[0]
+            if exc.status_code != 404 or first_segment == "api":
                 raise
             return await super().get_response("index.html", scope)
 
