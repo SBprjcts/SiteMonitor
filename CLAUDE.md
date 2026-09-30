@@ -76,7 +76,8 @@ Compares the freshly fetched variant state with the stored state and emits `even
 | `price_drop` | variant `price_cents` decreases |
 | `new_product` | product id never seen before for this store |
 
-- **The first sighting of a product is a baseline.** It emits only `new_product` and never a burst of `restock` events.
+- **The first sighting of a product is a silent baseline.** It never emits a burst of `restock` events, and it emits `new_product` only when the caller passes `announce_new=True`. Seeing a product for the first time doesn't mean the store just added it: a store's first sweep sees ~250 existing products, and a URL watch is usually for an existing product. So only the sweep loop announces, and only once that store has completed its first full sweep (phase 2 needs a per-store marker for this; `last_ok_at` isn't enough, since the hot loop sets it too). The hot loop, URL lookups, and the CLI never announce.
+- A size that appears on a known product already in stock is a `restock`. A size that disappears while in stock is `sold_out`, and its row is kept but marked unavailable.
 - A product that disappears from the catalog is marked `last_seen_at` and never deleted.
 - The diff engine is pure (it takes old and new state and returns events), which makes it easy to unit test.
 
@@ -84,7 +85,7 @@ Compares the freshly fetched variant state with the stored state and emits `even
 Routes each event to the active watches that match it:
 
 - **Product watch:** `product_id` matches, the variant passes the size filter, and the event type is enabled on the watch.
-- **Style-code watch:** normalize both sides (lowercase, remove `-` and whitespace, e.g. `DD1391-100` → `dd1391100`) and search the product's `search_text`, which is built from the title, handle, tags, `body_html` stripped of tags, and variant SKUs, all normalized.
+- **Style-code watch:** normalize both sides (lowercase, remove `-` and whitespace, e.g. `DD1391-100` → `dd1391100`) and search the product's `search_text`. The recorder writes `search_text` on every fetch (`build_search_text`): the title, handle, tags, description stripped of HTML, and variant SKUs, lowercased with whitespace collapsed. Word boundaries are kept for keyword watches, so the style-code matcher removes `-` and whitespace from `search_text` too when comparing.
 - **Keyword watch:** input is comma-separated, and a `-` prefix marks a negative. For example, `nike, low, panda, -gs, -kids` means **every** positive keyword must match as a whole word and **any** negative excludes the product. Matching is case-insensitive.
 - Optional filters on all watch types: a store subset (null means all stores), sizes, and `max_price_cents`.
 
