@@ -5,7 +5,9 @@ import respx
 from app.db.models import Platform, Store
 from app.db.session import get_session
 from app.main import app
-from app.stores.probe import get_store_probe, probe_shopify_store
+from app.stores import probe as probe_module
+from app.stores.domain import normalize_domain
+from app.stores.probe import get_store_probe, is_public_host, probe_shopify_store
 
 
 class FakeProbe:
@@ -23,6 +25,18 @@ class FakeProbe:
 @pytest.fixture
 def probe():
     return FakeProbe()
+
+
+@pytest.fixture(autouse=True)
+def fake_dns(monkeypatch):
+    """Every hostname resolves to one public address, so tests never do real DNS lookups."""
+    addresses = ["93.184.216.34"]
+
+    async def resolve(host):
+        return addresses
+
+    monkeypatch.setattr(probe_module, "resolve_host", resolve)
+    return addresses
 
 
 @pytest.fixture
@@ -117,12 +131,12 @@ async def test_add_store_normalizes_domain(api, stores, probe):
 
     assert response.status_code == 201
     body = response.json()
-    assert body["domain"] == "www.newshop.ca"
-    assert body["name"] == "www.newshop.ca"
+    assert body["domain"] == "newshop.ca"
+    assert body["name"] == "newshop.ca"
     assert body["platform"] == "shopify"
     assert body["enabled"] is True
     assert body["hot_interval_s"] == 15
-    assert probe.calls == ["www.newshop.ca"]
+    assert probe.calls == ["newshop.ca"]
     assert len((await api.get("/stores")).json()) == 3
 
 
@@ -140,6 +154,16 @@ async def test_add_duplicate_store(api, stores, probe):
     assert probe.calls == []
 
 
+async def test_www_and_bare_domain_are_the_same_store(api, stores, probe):
+    # Otherwise the same store would be monitored twice: double requests and double alerts.
+    assert (await api.post("/stores", json={"domain": "nrml.ca"})).status_code == 201
+
+    response = await api.post("/stores", json={"domain": "https://www.nrml.ca/"})
+
+    assert response.status_code == 409
+    assert response.json()["detail"] == "nrml.ca is already being monitored"
+
+
 async def test_add_store_that_is_not_shopify(api, stores, probe):
     probe.ok = False
 
@@ -150,12 +174,45 @@ async def test_add_store_that_is_not_shopify(api, stores, probe):
     assert len((await api.get("/stores")).json()) == 2
 
 
-@pytest.mark.parametrize("domain", ["", "   ", "localhost", "not a domain"])
+@pytest.mark.parametrize(
+    "domain",
+    [
+        "",
+        "   ",
+        "localhost",
+        "not a domain",
+        "127.0.0.1",
+        "http://169.254.169.254/latest/meta-data",
+        "10.0.0.5",
+        "[::1]",
+    ],
+)
 async def test_add_store_rejects_invalid_domain(api, stores, probe, domain):
     response = await api.post("/stores", json={"domain": domain})
 
     assert response.status_code == 422
     assert probe.calls == []
+
+
+@pytest.mark.parametrize(
+    ("value", "domain"),
+    [
+        ("nrml.ca", "nrml.ca"),
+        ("https://www.NRML.ca/collections/new?page=2", "nrml.ca"),
+        ("WWW.kith.com", "kith.com"),
+        ("ca.kith.com", "ca.kith.com"),
+        ("www.com", "www.com"),
+        ("  https://shop.www-store.ca/  ", "shop.www-store.ca"),
+    ],
+)
+def test_normalize_domain(value, domain):
+    assert normalize_domain(value) == domain
+
+
+@pytest.mark.parametrize("value", ["127.0.0.1", "https://[2001:db8::1]/"])
+def test_normalize_domain_rejects(value):
+    with pytest.raises(ValueError):
+        normalize_domain(value)
 
 
 # The real probe, against mocked HTTP.
@@ -193,3 +250,48 @@ async def test_probe_handles_connection_errors():
     respx.get(FEED, params={"limit": "1"}).mock(side_effect=httpx.ConnectError("boom"))
 
     assert await probe_shopify_store("shop.example.ca") is False
+
+
+@respx.mock
+async def test_probe_refuses_domains_that_resolve_to_private_addresses(fake_dns):
+    fake_dns[:] = ["10.0.0.5"]
+    route = respx.get(FEED, params={"limit": "1"}).respond(json={"products": [{"id": 1}]})
+
+    assert await probe_shopify_store("shop.example.ca") is False
+    assert not route.called
+
+
+@respx.mock
+async def test_probe_refuses_redirects_to_private_addresses():
+    respx.get(FEED, params={"limit": "1"}).respond(
+        302, headers={"Location": "http://169.254.169.254/latest/meta-data"}
+    )
+    metadata = respx.get("http://169.254.169.254/latest/meta-data").respond(200)
+
+    assert await probe_shopify_store("shop.example.ca") is False
+    assert not metadata.called
+
+
+@pytest.mark.parametrize(
+    ("resolved", "public"),
+    [
+        (["93.184.216.34"], True),
+        (["127.0.0.1"], False),
+        (["93.184.216.34", "192.168.1.10"], False),  # one private address is enough
+        (["fe80::1%12"], False),
+        ([], False),
+    ],
+)
+async def test_is_public_host(fake_dns, resolved, public):
+    fake_dns[:] = resolved
+
+    assert await is_public_host("shop.example.ca") is public
+
+
+async def test_is_public_host_when_dns_fails(monkeypatch):
+    async def fail(host):
+        raise OSError("no such host")
+
+    monkeypatch.setattr(probe_module, "resolve_host", fail)
+
+    assert await is_public_host("nope.example.ca") is False

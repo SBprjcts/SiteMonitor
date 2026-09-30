@@ -1,3 +1,5 @@
+import { stripWww } from "@/lib/format"
+
 /**
  * Parses a Shopify product URL into its store domain and product handle.
  * Handles /products/<handle>, /collections/<c>/products/<handle>, query strings and .js/.json.
@@ -13,7 +15,10 @@ export function parseProductUrl(input: string): { domain: string; handle: string
   }
   const match = url.pathname.match(/\/products\/([^/]+?)(?:\.(?:js|json))?\/?$/)
   if (!match || !url.hostname.includes(".")) return null
-  return { domain: url.hostname.toLowerCase(), handle: decodeURIComponent(match[1]).toLowerCase() }
+  return {
+    domain: stripWww(url.hostname.toLowerCase()),
+    handle: decodeURIComponent(match[1]).toLowerCase(),
+  }
 }
 
 /** Shopify cart permalink: opens checkout with one of this size in the cart. */

@@ -37,6 +37,7 @@ export function AddStoreDialog() {
   function onSubmit(e: FormEvent) {
     e.preventDefault()
     setTouched(true)
+    addStore.reset() // don't show the previous attempt's error next to a new one
     if (!domain) return
     addStore.mutate(
       { domain, name: name.trim() || undefined },

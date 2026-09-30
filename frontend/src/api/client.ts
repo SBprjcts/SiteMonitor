@@ -24,6 +24,18 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * FastAPI sends `detail` as a string for HTTPException, but as a list of issues for
+ * request validation errors ("Value error, Enter the store's domain, not an IP address").
+ */
+function errorMessage(detail: unknown): string | undefined {
+  if (typeof detail === "string") return detail
+  if (Array.isArray(detail) && typeof detail[0]?.msg === "string") {
+    return detail[0].msg.replace(/^Value error, /, "")
+  }
+  return undefined
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`/api${path}`, {
     credentials: "include",
@@ -32,7 +44,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   })
   if (!res.ok) {
     const body = await res.json().catch(() => null)
-    throw new ApiError(res.status, body?.detail ?? res.statusText)
+    throw new ApiError(res.status, errorMessage(body?.detail) ?? res.statusText)
   }
   return res.status === 204 ? (undefined as T) : res.json()
 }

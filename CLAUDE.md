@@ -207,7 +207,7 @@ All of these return valid `products.json`:
 
 **Not yet supported:** Haven (`havenshop.com`) runs headless Shopify (Hydrogen). `products.json` returns an empty list and `.js` returns 404. It needs the `shopify_hydrogen` adapter (phase 6).
 
-Users can add any other Shopify store in the UI. The backend validates it by requesting `/products.json?limit=1` and checking for a `products` key.
+Users can add any other Shopify store in the UI. The backend validates it by requesting `/products.json?limit=1` and checking for a non-empty `products` list.
 
 ## Dashboard pages
 
@@ -262,6 +262,8 @@ Each slice is end to end: backend, API, UI, and tests. Claim a slice by assignin
 - Every user-owned query must filter by `user_id`. There must be no cross-user data leaks.
 - All outbound HTTP to stores goes through the rate limiter. No direct `httpx.get` in feature code.
 - Monitor code must not import API code (see Process model).
+- **One domain rule everywhere:** store domains are lowercase hostnames without `www.` (`https://www.NRML.ca/x` → `nrml.ca`). Backend code uses `normalize_domain()` from `app/stores/domain.py`; the frontend mirrors it in `normalizeDomain()`. Otherwise the same store can be added twice.
+- Requests to a host a user typed (like the add-store probe) must refuse private, loopback and metadata addresses, including after redirects. See `app/stores/probe.py`.
 - Schema changes require an Alembic migration in the same PR.
 - Relationships are `lazy="raise"`: load them explicitly with `selectinload()` in the query, or accessing them raises.
 - Both collaborators work on Windows. Scripts and docs use PowerShell-friendly commands, and paths are handled with `pathlib`.
