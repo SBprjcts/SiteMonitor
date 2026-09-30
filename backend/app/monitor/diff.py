@@ -17,17 +17,21 @@ class EventData(BaseModel):
     new_value: str | None = None
 
 
-def diff_product(old: ProductData | None, new: ProductData) -> list[EventData]:
+def diff_product(
+    old: ProductData | None, new: ProductData, *, announce_new: bool = False
+) -> list[EventData]:
     """Returns the events between two snapshots of the same product.
 
-    - First sighting (old is None) is a baseline: only new_product, never a burst of restocks.
+    - First sighting (old is None) is a baseline, never a burst of restocks. It emits
+      new_product only if `announce_new`: seeing a product for the first time doesn't mean
+      the store just added it (a store's first sweep sees ~250 existing products).
     - A size going from unavailable to available is a restock, and the reverse is sold_out.
     - A size whose price goes down is a price_drop (in cents).
     - A size that appears already in stock counts as a restock.
     - A size that disappears while in stock counts as sold_out.
     """
     if old is None:
-        return [EventData(type=EventType.NEW_PRODUCT)]
+        return [EventData(type=EventType.NEW_PRODUCT)] if announce_new else []
 
     events: list[EventData] = []
     old_variants = {v.external_id: v for v in old.variants}

@@ -3,10 +3,23 @@ from app.monitor.diff import EventData, diff_product
 from tests.factories import product, variant
 
 
-def test_first_sighting_is_a_baseline_with_no_restock_burst():
+def test_first_sighting_is_a_silent_baseline():
+    # A store's first sweep sees hundreds of existing products; none of them are news.
     new = product(variant("1"), variant("2"), variant("3"))
 
-    assert diff_product(None, new) == [EventData(type=EventType.NEW_PRODUCT)]
+    assert diff_product(None, new) == []
+
+
+def test_first_sighting_announced_is_only_new_product_never_restocks():
+    new = product(variant("1"), variant("2"), variant("3"))
+
+    assert diff_product(None, new, announce_new=True) == [EventData(type=EventType.NEW_PRODUCT)]
+
+
+def test_announce_new_has_no_effect_on_known_products():
+    snapshot = product(variant("1"))
+
+    assert diff_product(snapshot, snapshot, announce_new=True) == []
 
 
 def test_nothing_changed_means_no_events():

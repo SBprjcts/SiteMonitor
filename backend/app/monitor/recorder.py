@@ -3,6 +3,7 @@
 The glue between the adapter (fetch), the diff (compare), and the DB (remember).
 """
 
+from dataclasses import dataclass
 from datetime import datetime
 
 from sqlalchemy import select
@@ -12,12 +13,28 @@ from sqlalchemy.orm import selectinload
 from app.db.models import Event, Product, Store, Variant, utcnow
 from app.monitor.adapters.base import ProductData, VariantData
 from app.monitor.diff import diff_product
+from app.monitor.matching import build_search_text
+
+
+@dataclass
+class RecordResult:
+    events: list[Event]
+    # True if this was the first time the product was seen (a baseline was saved).
+    first_sighting: bool
 
 
 async def record_product(
-    session: AsyncSession, store: Store, fresh: ProductData, now: datetime | None = None
-) -> list[Event]:
+    session: AsyncSession,
+    store: Store,
+    fresh: ProductData,
+    now: datetime | None = None,
+    *,
+    announce_new: bool = False,
+) -> RecordResult:
     """Diffs `fresh` against the stored product, saves it, and returns the new events.
+
+    `announce_new` emits new_product for a first sighting. Only the sweep loop sets it,
+    once the store has had its first full sweep; everything else records a silent baseline.
 
     Flushes but does not commit, so the caller decides when the transaction ends.
     """
@@ -27,7 +44,10 @@ async def record_product(
         .where(Product.store_id == store.id, Product.external_id == fresh.external_id)
         .options(selectinload(Product.variants))
     )
-    changes = diff_product(_to_product_data(product) if product else None, fresh)
+    first_sighting = product is None
+    changes = diff_product(
+        _to_product_data(product) if product else None, fresh, announce_new=announce_new
+    )
 
     if product is None:
         product = Product(store=store, external_id=fresh.external_id, first_seen_at=now)
@@ -39,6 +59,7 @@ async def record_product(
     product.vendor = fresh.vendor
     product.image_url = fresh.image_url
     product.url = fresh.url
+    product.search_text = build_search_text(fresh)
     product.last_seen_at = now
 
     variants = {v.external_id: v for v in product.variants}
@@ -73,7 +94,7 @@ async def record_product(
     ]
     session.add_all(events)
     await session.flush()
-    return events
+    return RecordResult(events=events, first_sighting=first_sighting)
 
 
 def _update_variant(variant: Variant, data: VariantData, now: datetime) -> None:
