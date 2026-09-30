@@ -292,7 +292,7 @@ npm run build                             # output served by FastAPI
 
 | Var | Default | Purpose |
 |---|---|---|
-| `DATABASE_URL` | `sqlite+aiosqlite:///./sitemonitor.db` | Postgres on the VPS if desired |
+| `DATABASE_URL` | `backend/sitemonitor.db` (absolute path, so it does not depend on the current folder) | Postgres on the VPS if desired |
 | `MONITOR_ENABLED` | `true` | Run the monitor inside the API process |
 | `DEFAULT_HOT_INTERVAL_S` | `15` | Product watch poll interval |
 | `DEFAULT_SWEEP_INTERVAL_S` | `60` | Catalog sweep interval |
