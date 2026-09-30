@@ -11,6 +11,7 @@ import argparse
 import asyncio
 import sys
 
+import httpx
 from sqlalchemy import select
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -41,7 +42,8 @@ async def run_once(session: AsyncSession, adapter: StoreAdapter, url: str) -> li
         lines.append(f"(added {domain} as a new store)")
 
     fresh = await adapter.fetch_product(domain, handle)
-    events = await record_product(session, store, fresh)
+    # A URL lookup is usually for an existing product, so it never announces new_product.
+    result = await record_product(session, store, fresh)
     await session.commit()
 
     lines.append(f"{fresh.title}  [{store.name}]")
@@ -49,15 +51,16 @@ async def run_once(session: AsyncSession, adapter: StoreAdapter, url: str) -> li
         stock = "in stock" if v.available else "sold out"
         lines.append(f"  {v.size:<12} {stock:<10} ${v.price_cents / 100:.2f}")
     lines.append("")
-    lines.extend(await _describe(session, events))
+    if result.first_sighting:
+        lines.append("First time seeing this product: saved a baseline. Run again later.")
+    else:
+        lines.extend(await _describe(session, result.events))
     return lines
 
 
 async def _describe(session: AsyncSession, events: list[Event]) -> list[str]:
     if not events:
         return ["No changes since the last run."]
-    if events[0].type is EventType.NEW_PRODUCT:
-        return ["First time seeing this product: saved a baseline. Run again later."]
 
     variant_ids = [e.variant_id for e in events]
     rows = await session.execute(
@@ -92,6 +95,14 @@ async def main(argv: list[str] | None = None) -> int:
         return 2
     except ProductNotFoundError as exc:
         print(f"error: product not found: {exc}", file=sys.stderr)
+        return 1
+    except httpx.HTTPStatusError as exc:
+        code = exc.response.status_code
+        hint = " (rate limited: wait a few minutes)" if code == 429 else ""
+        print(f"error: the store answered {code}{hint}", file=sys.stderr)
+        return 1
+    except httpx.HTTPError as exc:
+        print(f"error: couldn't reach the store: {exc!r}", file=sys.stderr)
         return 1
     except OperationalError as exc:
         if "no such table" not in str(exc):
