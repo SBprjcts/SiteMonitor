@@ -53,7 +53,9 @@ class Base(DeclarativeBase):
     metadata = MetaData(
         naming_convention={
             "ix": "ix_%(column_0_label)s",
-            "uq": "uq_%(table_name)s_%(column_0_name)s",
+            # column_0_N_name joins every column, so two constraints starting with the same
+            # column still get different names.
+            "uq": "uq_%(table_name)s_%(column_0_N_name)s",
             "ck": "ck_%(table_name)s_%(constraint_name)s",
             "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
             "pk": "pk_%(table_name)s",
@@ -106,7 +108,7 @@ class Store(Base):
     last_ok_at: Mapped[datetime | None] = mapped_column(UTCDateTime)
     consecutive_errors: Mapped[int] = mapped_column(default=0)
 
-    products: Mapped[list["Product"]] = relationship(back_populates="store")
+    products: Mapped[list["Product"]] = relationship(back_populates="store", lazy="raise")
 
 
 class Product(Base):
@@ -127,8 +129,8 @@ class Product(Base):
     first_seen_at: Mapped[datetime] = mapped_column(UTCDateTime, default=utcnow)
     last_seen_at: Mapped[datetime] = mapped_column(UTCDateTime, default=utcnow)
 
-    store: Mapped[Store] = relationship(back_populates="products")
-    variants: Mapped[list["Variant"]] = relationship(back_populates="product")
+    store: Mapped[Store] = relationship(back_populates="products", lazy="raise")
+    variants: Mapped[list["Variant"]] = relationship(back_populates="product", lazy="raise")
 
 
 class Variant(Base):
@@ -146,7 +148,7 @@ class Variant(Base):
     available: Mapped[bool]
     updated_at: Mapped[datetime] = mapped_column(UTCDateTime, default=utcnow)
 
-    product: Mapped[Product] = relationship(back_populates="variants")
+    product: Mapped[Product] = relationship(back_populates="variants", lazy="raise")
 
 
 class Event(Base):
