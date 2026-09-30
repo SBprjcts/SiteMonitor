@@ -21,6 +21,10 @@ extend-exclude = ["alembic/versions"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "ASYNC"]
 
+[tool.ruff.lint.isort]
+# The local alembic/ folder is migrations, not the library.
+known-third-party = ["alembic"]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"

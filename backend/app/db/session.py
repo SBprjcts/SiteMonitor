@@ -11,8 +11,8 @@ from sqlalchemy.ext.asyncio import (
 from app.config import get_settings
 
 
-def create_engine(database_url: str) -> AsyncEngine:
-    engine = create_async_engine(database_url)
+def create_engine(database_url: str, **kwargs) -> AsyncEngine:
+    engine = create_async_engine(database_url, **kwargs)
 
     if engine.dialect.name == "sqlite":
         # WAL lets the API read while the monitor writes. SQLite also needs
