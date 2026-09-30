@@ -15,6 +15,10 @@ export function StoreStatusBadge({ store }: { store: Store }) {
   if (!store.enabled) {
     return <Badge variant="secondary">Paused</Badge>
   }
+  // "Healthy" would be misleading before the monitor has checked the store at all.
+  if (store.last_ok_at === null && store.consecutive_errors === 0) {
+    return <Badge variant="outline">Not checked yet</Badge>
+  }
   const { label, dot } = STYLES[store.status]
   return (
     <Badge variant="outline">
