@@ -77,6 +77,7 @@ Compares the freshly fetched variant state with the stored state and emits `even
 | `new_product` | product id never seen before for this store |
 
 - **The first sighting of a product is a baseline.** It emits only `new_product` and never a burst of `restock` events.
+- A size that appears on a known product already in stock is a `restock`. A size that disappears while in stock is `sold_out`, and its row is kept but marked unavailable.
 - A product that disappears from the catalog is marked `last_seen_at` and never deleted.
 - The diff engine is pure (it takes old and new state and returns events), which makes it easy to unit test.
 
