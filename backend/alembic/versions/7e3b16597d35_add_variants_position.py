@@ -1,7 +1,7 @@
 """add variants position
 
 Revision ID: 7e3b16597d35
-Revises: 57040e9deb51
+Revises: 4a1658f1f280
 Create Date: 2026-10-07 23:41:39.900224
 
 """
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = '7e3b16597d35'
-down_revision: Union[str, Sequence[str], None] = '57040e9deb51'
+down_revision: Union[str, Sequence[str], None] = '4a1658f1f280'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
