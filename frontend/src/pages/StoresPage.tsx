@@ -18,6 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { useMe } from "@/hooks/useAuth"
 import { useStores, useToggleStore } from "@/hooks/useStores"
 import { formatRelativeTime } from "@/lib/format"
 
@@ -70,6 +71,8 @@ export function StoresPage() {
 
 function StoreRow({ store }: { store: Store }) {
   const toggle = useToggleStore()
+  // Stores are shared by every user, so only admins can turn one on or off.
+  const isAdmin = useMe().data?.is_admin ?? false
   const unsupported = store.platform === "shopify_hydrogen"
 
   function onToggle(enabled: boolean) {
@@ -114,7 +117,9 @@ function StoreRow({ store }: { store: Store }) {
         {store.last_ok_at ? formatRelativeTime(store.last_ok_at) : "Never"}
       </TableCell>
       <TableCell className="pr-4 text-right">
-        {unsupported ? (
+        {!isAdmin ? (
+          <span className="text-sm text-muted-foreground">{store.enabled ? "On" : "Paused"}</span>
+        ) : unsupported ? (
           <Tooltip>
             <TooltipTrigger asChild>
               {/* span keeps the tooltip working on a disabled switch */}

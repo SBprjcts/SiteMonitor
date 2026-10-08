@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     domain_min_request_gap_s: float = 2
     alert_cooldown_s: int = 300
     session_secret: str
+    session_ttl_days: int = 30
+    # Set to true on the VPS (HTTPS). Browsers drop Secure cookies on plain http://localhost.
+    session_cookie_secure: bool = False
     log_level: str = "INFO"
 
 

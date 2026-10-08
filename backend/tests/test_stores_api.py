@@ -8,6 +8,7 @@ from app.main import app
 from app.stores import probe as probe_module
 from app.stores.domain import normalize_domain
 from app.stores.probe import get_store_probe, is_public_host, probe_shopify_store
+from tests.conftest import log_in_as
 
 
 class FakeProbe:
@@ -40,14 +41,15 @@ def fake_dns(monkeypatch):
 
 
 @pytest.fixture
-async def api(session, probe):
-    """An API client wired to the test database and the fake probe."""
+async def api(session, probe, admin):
+    """An API client wired to the test database and the fake probe, logged in as an admin."""
 
     async def test_session():
         yield session
 
     app.dependency_overrides[get_session] = test_session
     app.dependency_overrides[get_store_probe] = lambda: probe
+    log_in_as(admin)
     transport = httpx.ASGITransport(app=app)
     async with httpx.AsyncClient(transport=transport, base_url="http://test/api") as client:
         yield client

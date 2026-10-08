@@ -2,11 +2,12 @@ import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.api import health, products, stores
+from app.api import auth, health, products, stores
+from app.api.deps import get_current_user
 from app.config import REPO_ROOT, get_settings
 from app.db.session import engine
 
@@ -43,8 +44,11 @@ def create_app() -> FastAPI:
 
     app = FastAPI(title="SiteMonitor", lifespan=lifespan)
     app.include_router(health.router, prefix="/api")
-    app.include_router(stores.router, prefix="/api")
-    app.include_router(products.router, prefix="/api")
+    app.include_router(auth.router, prefix="/api")
+    # Everything below needs a logged-in user. New routers go here unless they're public.
+    logged_in = [Depends(get_current_user)]
+    app.include_router(stores.router, prefix="/api", dependencies=logged_in)
+    app.include_router(products.router, prefix="/api", dependencies=logged_in)
 
     # Mounted last so /api routes take priority. Run `npm run build` in frontend/ first.
     if FRONTEND_DIST.is_dir():

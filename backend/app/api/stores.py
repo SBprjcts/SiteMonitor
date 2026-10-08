@@ -5,6 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.deps import AdminUser
 from app.config import get_settings
 from app.db.models import Platform, Store
 from app.db.session import get_session
@@ -23,7 +24,10 @@ async def list_stores(session: SessionDep) -> list[StoreOut]:
 
 
 @router.patch("/{store_id}")
-async def update_store(store_id: int, body: StoreUpdate, session: SessionDep) -> StoreOut:
+async def update_store(
+    store_id: int, body: StoreUpdate, session: SessionDep, _admin: AdminUser
+) -> StoreOut:
+    """Enables or disables a store. Admins only: stores are shared by every user."""
     store = await session.get(Store, store_id)
     if store is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Store not found")

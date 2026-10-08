@@ -9,6 +9,7 @@ import type {
   ProductDetail,
   StockEvent,
   Store,
+  User,
   Watch,
   WatchListItem,
 } from "./types"
@@ -72,6 +73,55 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     throw new ApiError(res.status, errorMessage(body?.detail) ?? res.statusText)
   }
   return res.status === 204 ? (undefined as T) : res.json()
+}
+
+// Auth
+
+/**
+ * Auth is only mocked when every section is: as soon as one section talks to the real
+ * backend, its endpoints need a real login.
+ */
+const AUTH_MOCKED = MOCKED.size === SECTIONS.length
+
+let mockUser: User | null = { id: 1, email: "you@example.com", is_admin: true }
+
+/** The logged-in user, or null when nobody is logged in. */
+export async function getMe(): Promise<User | null> {
+  if (AUTH_MOCKED) return delay(mockUser, 100)
+  try {
+    return await request<User>("/auth/me")
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 401) return null
+    throw err
+  }
+}
+
+export interface Credentials {
+  email: string
+  password: string
+}
+
+export function login(credentials: Credentials): Promise<User> {
+  if (AUTH_MOCKED) return mockLogin(credentials)
+  return request("/auth/login", { method: "POST", body: JSON.stringify(credentials) })
+}
+
+export function register(credentials: Credentials): Promise<User> {
+  if (AUTH_MOCKED) return mockLogin(credentials)
+  return request("/auth/register", { method: "POST", body: JSON.stringify(credentials) })
+}
+
+export function logout(): Promise<void> {
+  if (AUTH_MOCKED) {
+    mockUser = null
+    return delay(undefined, 100)
+  }
+  return request("/auth/logout", { method: "POST" })
+}
+
+function mockLogin({ email }: Credentials): Promise<User> {
+  mockUser = { id: 1, email: email.trim().toLowerCase(), is_admin: true }
+  return delay(mockUser)
 }
 
 // Stores
