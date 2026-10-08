@@ -6,7 +6,7 @@ import httpx
 import pytest
 import respx
 
-from app.monitor.http import create_http_client
+from app.monitor.http import USER_AGENT, create_http_client
 from app.monitor.ratelimit import (
     BACKOFF_BASE_S,
     BACKOFF_MAX_S,
@@ -15,8 +15,10 @@ from app.monitor.ratelimit import (
     JITTER,
     MAX_WAIT_S,
     RETRY_AFTER_MAX_S,
+    Endpoint,
     RateLimiter,
     StoreBusyError,
+    endpoint_for,
     limiter,
     parse_retry_after,
 )
@@ -52,9 +54,16 @@ def limits(fake_time):
     )
 
 
-async def request(limits, host="ca.kith.com", status=200, retry_after=None, max_wait_s=None):
+async def request(
+    limits,
+    host="ca.kith.com",
+    status=200,
+    retry_after=None,
+    max_wait_s=None,
+    endpoint=Endpoint.CATALOG,
+):
     kwargs = {} if max_wait_s is None else {"max_wait_s": max_wait_s}
-    async with limits.slot(host, **kwargs) as slot:
+    async with limits.slot(host, endpoint, **kwargs) as slot:
         slot.record(status, retry_after)
 
 
@@ -203,6 +212,60 @@ async def test_a_cancelled_request_is_not_held_against_the_store(limits):
     assert health.retry_in_s == GAP
 
 
+# Endpoints back off separately
+
+
+@pytest.mark.parametrize(
+    ("path", "endpoint"),
+    [
+        ("/products/gel-lyte-iii.js", Endpoint.PRODUCT),
+        ("/collections/new/products/gel-lyte-iii.js", Endpoint.PRODUCT),
+        ("/products.json", Endpoint.CATALOG),
+        ("/products/gel-lyte-iii.json", Endpoint.CATALOG),
+        ("/assets/theme.js", Endpoint.CATALOG),
+        ("/", Endpoint.CATALOG),
+    ],
+)
+def test_endpoint_for(path, endpoint):
+    assert endpoint_for(path) is endpoint
+
+
+async def test_a_refused_product_page_does_not_stall_the_catalog(limits, fake_time):
+    await request(limits, status=429, retry_after="60", endpoint=Endpoint.PRODUCT)
+
+    await request(limits, endpoint=Endpoint.CATALOG)  # goes out after the normal gap
+
+    assert fake_time.sleeps == [GAP]
+    assert limits.health("ca.kith.com", Endpoint.CATALOG).consecutive_errors == 0
+    with pytest.raises(StoreBusyError):
+        await request(limits, endpoint=Endpoint.PRODUCT)
+
+
+async def test_spacing_is_still_shared_between_endpoints(limits, fake_time):
+    await request(limits, endpoint=Endpoint.PRODUCT)
+    await request(limits, endpoint=Endpoint.CATALOG)
+    await request(limits, endpoint=Endpoint.PRODUCT)
+
+    assert fake_time.sleeps == [GAP, GAP]
+
+
+async def test_refused_product_pages_do_not_mark_the_catalog_degraded(limits):
+    for _ in range(DEGRADED_AFTER):
+        await request(limits, status=429, endpoint=Endpoint.PRODUCT, max_wait_s=10_000)
+
+    assert limits.health("ca.kith.com", Endpoint.PRODUCT).degraded is True
+    assert limits.health("ca.kith.com", Endpoint.CATALOG).degraded is False
+
+
+async def test_a_good_catalog_response_does_not_clear_the_product_backoff(limits):
+    await request(limits, status=429, retry_after="60", endpoint=Endpoint.PRODUCT)
+    await request(limits, status=200, endpoint=Endpoint.CATALOG)
+
+    product = limits.health("ca.kith.com", Endpoint.PRODUCT)
+    assert product.consecutive_errors == 1
+    assert product.retry_in_s > MAX_WAIT_S
+
+
 # Failing fast
 
 
@@ -324,9 +387,11 @@ async def test_a_redirect_to_www_counts_against_the_same_store():
         response = await client.get("https://foosh.ca/products/x.js")
 
     assert response.status_code == 429
-    # The 429 came from www.foosh.ca, and it is foosh.ca that is now backing off.
-    assert limiter.health("foosh.ca").consecutive_errors == 1
-    assert limiter.health("foosh.ca").retry_in_s > MAX_WAIT_S
+    # The 429 came from www.foosh.ca, and it is foosh.ca's product pages that back off.
+    health = limiter.health("foosh.ca", Endpoint.PRODUCT)
+    assert health.consecutive_errors == 1
+    assert health.retry_in_s > MAX_WAIT_S
+    assert limiter.health("foosh.ca", Endpoint.CATALOG).consecutive_errors == 0
 
 
 @respx.mock
@@ -338,3 +403,28 @@ async def test_connection_errors_reach_the_limiter_and_the_caller():
             await client.get("https://nrml.ca/products.json")
 
     assert limiter.health("nrml.ca").consecutive_errors == 1
+
+
+@respx.mock
+async def test_the_catalog_keeps_working_while_product_pages_are_refused():
+    respx.get("https://ca.kith.com/products/x.js").respond(429, headers={"Retry-After": "60"})
+    respx.get("https://ca.kith.com/products.json").respond(json={"products": []})
+
+    async with create_http_client() as client:
+        assert (await client.get("https://ca.kith.com/products/x.js")).status_code == 429
+        assert (await client.get("https://ca.kith.com/products.json")).status_code == 200
+        with pytest.raises(StoreBusyError):
+            await client.get("https://ca.kith.com/products/y.js")
+
+
+@respx.mock
+async def test_requests_say_who_we_are():
+    route = respx.get("https://nrml.ca/products.json").respond(json={"products": []})
+
+    async with create_http_client() as client:
+        await client.get("https://nrml.ca/products.json")
+
+    sent = route.calls.last.request.headers["user-agent"]
+    assert sent == USER_AGENT
+    assert sent.startswith("SiteMonitor/")
+    assert "Mozilla" not in sent and "Chrome" not in sent

@@ -29,7 +29,7 @@ This file is the source of truth for architecture and conventions. If you change
 Notes:
 - The variant `sku` is **not** the style code. On Kith, for example, it is an internal number (`2000428323`). Style codes appear in the title, handle, tags, or `body_html`, so match across all of those fields.
 - Prices differ between the two endpoints: `.js` gives integer cents, while `products.json` gives a dollar string. The adapter normalizes both to `price_cents: int`. All stores are CAD.
-- **The `.js` endpoint is throttled much harder than `products.json`.** Cloudflare (in front of every Shopify store) often answers it with `429` and `Retry-After: 60`, even for a first request. Seen on 2026-09-30 and 2026-10-08 from one machine: our httpx client got 429 on most `.js` requests, while `products.json` from the same client, and `.js` from curl, returned 200. Whether that is permanent or a flag on that IP is **not known yet**. Until it is, the hot loop can't count on polling `.js` every 15s: it must honor `Retry-After`, and the catalog sweep is the dependable source. `/products/{handle}.json` is not a substitute: its variants have no `available` field. Disguising the client to get around this is a non-goal (see above).
+- **Identify honestly, and expect the `.js` endpoint to be the touchy one.** With a fake Chrome User-Agent, Cloudflare (in front of every Shopify store) answered most `.js` requests with `429` and `Retry-After: 60`, while `products.json` and curl were fine: it can tell a client that isn't the browser it names. Measured 2026-10-08 on two machines, requests 6s apart: fake Chrome UA, 2 of 3 and 4 of 5 refused; `SiteMonitor/0.1 (+repo url)`, 1 of 9 and 0 of 4 refused, then 6 of 6 CLI runs succeeded. So `USER_AGENT` in `monitor/http.py` says who we are. `.js` can still be refused now and then, so the hot loop must honor `Retry-After`, and the catalog sweep stays the dependable source. `/products/{handle}.json` is not a substitute: its variants have no `available` field.
 
 ## Architecture
 
@@ -64,11 +64,12 @@ Intervals are configurable per store.
 ### Per-domain rate limiter (`monitor/ratelimit.py`)
 - One shared `limiter` per process, keyed by store (`www.foosh.ca` and `foosh.ca` are one store). It sits under the HTTP client as a transport (`RateLimitedTransport`, wired up in `monitor/http.py`), so every client from `create_http_client()` shares it, and each hop of a redirect counts.
 - Spacing: one request per store every `DOMAIN_MIN_REQUEST_GAP_S` (default 2s) plus up to 25% jitter, and never two at once. This is a token bucket holding one token.
+- Backoff is tracked **per store and endpoint** (`Endpoint.PRODUCT` for `/products/{handle}.js`, `Endpoint.CATALOG` for everything else), because Shopify throttles them separately: a refused product page must not stall the catalog sweep or mark the whole store degraded. Spacing stays per store.
 - On 429, 403, 5xx, or a connection error: exponential backoff (5s, doubling, up to 5 min), and honor `Retry-After` when the store sends it. A good response resets it. A 404 is a normal answer, not a failure. Solestop, for example, returns intermittent 503s.
 - **It fails fast instead of making callers wait.** If a store's next slot is more than 10s away, the request raises `StoreBusyError` and is not sent. The product lookup turns that into a 503; the polling loops should skip that store until the next tick.
-- A circuit breaker: after 5 consecutive failures the store counts as `degraded` and is polled at most once a minute until one request succeeds. The limiter keeps this in memory (`limiter.health(domain)`); the scheduler copies it onto the `stores` row (`last_ok_at`, `consecutive_errors`, `status`), which the UI shows.
+- A circuit breaker: after 5 consecutive failures an endpoint counts as `degraded` and is polled at most once a minute until one request succeeds. The limiter keeps this in memory (`limiter.health(domain, endpoint)`); the scheduler copies the **catalog's** health onto the `stores` row (`last_ok_at`, `consecutive_errors`, `status`), which the UI shows.
 - The state is per process. Locally that is one process. On the VPS the API and the monitor are separate containers and do not share a budget, so user lookups there are extra requests on top of the monitor's.
-- Send a normal browser User-Agent. Never parallelize requests to the same domain.
+- Send our own User-Agent (`SiteMonitor/<version> (+repo url)`), never a browser's. Never parallelize requests to the same domain.
 
 ### Diff engine (`monitor/diff.py`)
 Compares the freshly fetched variant state with the stored state and emits `events`:
