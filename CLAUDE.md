@@ -230,7 +230,7 @@ Users can add any other Shopify store in the UI. The backend validates it by req
 2. **Alerts and scale:** rate limiter, scheduler (hot and sweep loops), Discord notifier, and seeding every store.
 3. **API and dashboard:** auth, stores, product URL watches with the size picker, live feed, webhook settings.
 4. **Matching:** style-code and keyword watches, new-product and price-drop alerts.
-5. **Deploy and polish:** Docker Compose, VPS deploy behind Caddy (automatic HTTPS), GitHub Actions CI, README with an architecture diagram and real metrics.
+5. **Deploy and polish:** Docker Compose, VPS deploy behind Caddy (automatic HTTPS), README with an architecture diagram and real metrics.
 6. **Expansion:** Hydrogen adapter (Haven), Amazon adapter, and a desktop wrapper or browser extension as a thin client over the same backend.
 
 ## Feature slices (for splitting work)
@@ -253,7 +253,7 @@ Each slice is end to end: backend, API, UI, and tests. Claim a slice by assignin
 - Short-lived branches: `feat/<slice>-<thing>`, `fix/<thing>`, `chore/<thing>`.
 - Commit messages follow Conventional Commits (`feat: add shopify adapter`). Do not add AI attribution trailers or mentions to commits or PRs.
 - Track work in GitHub Issues and the Projects board (To Do / In Progress / In Review / Done).
-- CI (phase 5) runs `ruff check`, `ruff format --check`, `pytest`, `npm run typecheck`, and `npm run lint` (oxlint). A PR must be green before merging.
+- CI (`.github/workflows/ci.yml`) runs on every PR: `ruff check`, `ruff format --check`, and `pytest` for the backend; `npm run typecheck`, `npm run lint` (oxlint), and `npm run build` for the frontend. A PR must be green before merging.
 
 ## Rules
 
