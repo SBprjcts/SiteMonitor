@@ -1,9 +1,10 @@
 import { useState } from "react"
 import { NavLink, Outlet } from "react-router"
-import { BellRing, Eye, LayoutDashboard, Menu, Settings, Store } from "lucide-react"
+import { BellRing, Eye, LayoutDashboard, LogOut, Menu, Settings, Store } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { useLogout, useMe } from "@/hooks/useAuth"
 import { cn } from "@/lib/utils"
 
 const NAV_ITEMS = [
@@ -46,6 +47,32 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   )
 }
 
+function Account() {
+  const { data: user } = useMe()
+  const logout = useLogout()
+  if (!user) return null
+
+  return (
+    <div className="mt-4 flex items-center gap-2 border-t border-border px-3 py-3">
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-sm" title={user.email}>
+          {user.email}
+        </div>
+        {user.is_admin && <div className="text-xs text-muted-foreground">Admin</div>}
+      </div>
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label="Log out"
+        disabled={logout.isPending}
+        onClick={() => logout.mutate()}
+      >
+        <LogOut />
+      </Button>
+    </div>
+  )
+}
+
 export function AppShell() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -55,6 +82,7 @@ export function AppShell() {
         <div className="sticky top-0">
           <Brand />
           <NavLinks />
+          <Account />
         </div>
       </aside>
 
@@ -70,6 +98,7 @@ export function AppShell() {
               <SheetTitle className="sr-only">Navigation</SheetTitle>
               <Brand />
               <NavLinks onNavigate={() => setMobileOpen(false)} />
+              <Account />
             </SheetContent>
           </Sheet>
           <span className="font-heading font-semibold">SiteMonitor</span>

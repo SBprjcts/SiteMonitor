@@ -14,6 +14,7 @@ from app.main import app
 from app.monitor.adapters.base import ProductNotFoundError
 from app.monitor.adapters.shopify import ShopifyAdapter
 from app.monitor.recorder import record_product
+from tests.conftest import log_in_as
 from tests.factories import product, variant
 
 FIXTURES = Path(__file__).parent / "fixtures" / "shopify"
@@ -43,12 +44,13 @@ def adapter():
 
 
 @pytest.fixture
-async def api(session, adapter):
+async def api(session, adapter, admin):
     async def test_session():
         yield session
 
     app.dependency_overrides[get_session] = test_session
     app.dependency_overrides[get_store_adapter] = lambda: adapter
+    log_in_as(admin)
     transport = httpx.ASGITransport(app=app)
     async with httpx.AsyncClient(transport=transport, base_url="http://test/api") as client:
         yield client
@@ -200,7 +202,7 @@ async def test_lookup_store_errors(api, kith, adapter, session, error, status, d
 
 
 @respx.mock
-async def test_lookup_with_the_real_shopify_adapter(session, kith):
+async def test_lookup_with_the_real_shopify_adapter(session, kith, admin):
     """The whole path, from a pasted URL through the real adapter, on recorded Kith data."""
     data = json.loads((FIXTURES / "kith_product.js.json").read_text(encoding="utf-8"))
     respx.get(f"https://ca.kith.com/products/{data['handle']}.js").respond(json=data)
@@ -214,6 +216,7 @@ async def test_lookup_with_the_real_shopify_adapter(session, kith):
 
     app.dependency_overrides[get_session] = test_session
     app.dependency_overrides[get_store_adapter] = real_adapter
+    log_in_as(admin)
     try:
         transport = httpx.ASGITransport(app=app)
         async with httpx.AsyncClient(transport=transport, base_url="http://test/api") as api:

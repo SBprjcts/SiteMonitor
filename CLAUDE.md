@@ -119,7 +119,7 @@ Adapters return normalized `ProductData`/`VariantData` (pydantic) objects and kn
 - httpx (async) for all outbound requests
 - SQLAlchemy 2 (async) + Alembic. Uses SQLite locally (aiosqlite, WAL mode) and Postgres optionally on the VPS (asyncpg), switched by `DATABASE_URL`. **Keep queries dialect-neutral.** No SQLite-only or Postgres-only SQL.
 - pydantic v2 + pydantic-settings for config
-- Auth: email + password hashed with argon2, server-side sessions in an httpOnly cookie
+- Auth: email + password hashed with argon2, server-side sessions in an httpOnly cookie. The cookie holds a random token; `sessions.id` stores an HMAC of it (keyed by `SESSION_SECRET`), so a leaked database can't be used to log in. Endpoints get the user from `CurrentUser` / `AdminUser` in `app/api/deps.py`.
 - Tests: pytest, pytest-asyncio, respx (to mock httpx)
 - Lint and format: ruff
 
@@ -144,6 +144,8 @@ backend/
       session.py            engine + session factory
     schemas/                pydantic request/response models
     api/                    routers: auth, stores, watches, products, events, webhooks, stream
+      deps.py               SessionDep, CurrentUser, AdminUser
+    auth/                   password hashing and login sessions
     monitor/
       __main__.py           run the monitor standalone
       scheduler.py          hot + sweep loops per store
@@ -157,6 +159,7 @@ backend/
       discord.py            embed builder + sender
       queue.py
     seed.py                 seeds the store list below
+    make_admin.py           makes a registered user an admin
   tests/
     fixtures/               recorded store JSON (never hit live stores in tests)
 frontend/
@@ -260,7 +263,8 @@ Each slice is end to end: backend, API, UI, and tests. Claim a slice by assignin
 - **Never commit `.env`** or real webhook URLs. Add new settings to `.env.example` with a placeholder.
 - **Tests never hit live stores or Discord.** Use recorded JSON in `backend/tests/fixtures/` and mock with respx.
 - Every user-owned query must filter by `user_id`. There must be no cross-user data leaks.
-- **Stores are shared, so only admins can enable or disable one** (`PATCH /api/stores/{id}` returns 403 for everyone else). Any logged-in user can add a store: the probe checks it first, and adding one doesn't affect other users. Until auth exists (slice E), the toggle is unprotected.
+- **Stores are shared, so only admins can enable or disable one** (`PATCH /api/stores/{id}` returns 403 for everyone else). Any logged-in user can add a store: the probe checks it first, and adding one doesn't affect other users. Admins are made by hand with `python -m app.make_admin <email>`; there is no UI for it.
+- **Every API route needs a login except `/api/auth/*` and `/api/health`.** Add new routers under `logged_in` in `app/main.py`, and take `user: CurrentUser` when the endpoint needs to know who is asking.
 - All outbound HTTP to stores goes through the rate limiter. No direct `httpx.get` in feature code.
 - Monitor code must not import API code (see Process model).
 - **One domain rule everywhere:** store domains are lowercase hostnames without `www.` (`https://www.NRML.ca/x` → `nrml.ca`). Backend code uses `normalize_domain()` from `app/stores/domain.py`; the frontend mirrors it in `normalizeDomain()`. Otherwise the same store can be added twice.
@@ -277,6 +281,7 @@ cd backend
 uv sync                                   # install deps
 uv run alembic upgrade head               # migrate DB
 uv run python -m app.seed                 # seed stores
+uv run python -m app.make_admin <email>   # make a registered user an admin (--revoke to undo)
 uv run uvicorn app.main:app --reload      # API + monitor on :8000
 uv run python -m app.monitor              # monitor only
 uv run python -m app.monitor --once <url>   # check one product once and print changes
@@ -304,5 +309,7 @@ npm run build                             # output served by FastAPI
 | `DEFAULT_SWEEP_INTERVAL_S` | `60` | Catalog sweep interval |
 | `DOMAIN_MIN_REQUEST_GAP_S` | `2` | Rate limiter spacing per domain |
 | `ALERT_COOLDOWN_S` | `300` | Per-variant alert cooldown |
-| `SESSION_SECRET` | *(required)* | Session signing |
+| `SESSION_SECRET` | *(required)* | Keys the hash of session tokens. Changing it logs everyone out |
+| `SESSION_TTL_DAYS` | `30` | How long a login lasts |
+| `SESSION_COOKIE_SECURE` | `false` | Set to `true` on the VPS (HTTPS). Must stay `false` on `http://localhost`, or the browser drops the cookie |
 | `LOG_LEVEL` | `INFO` | |

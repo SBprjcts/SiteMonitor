@@ -2,6 +2,13 @@
 // Field names are snake_case to match FastAPI's JSON, so swapping these for the
 // generated `schema.d.ts` types later is a rename, not a rewrite.
 
+/** The logged-in account (GET /auth/me). Admins can turn stores on and off. */
+export interface User {
+  id: number
+  email: string
+  is_admin: boolean
+}
+
 export type StoreStatus = "ok" | "degraded" | "blocked"
 export type StorePlatform = "shopify" | "shopify_hydrogen"
 
