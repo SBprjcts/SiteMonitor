@@ -8,6 +8,7 @@ from datetime import UTC, datetime
 from enum import StrEnum
 
 from sqlalchemy import (
+    JSON,
     DateTime,
     Enum,
     ForeignKey,
@@ -92,6 +93,12 @@ class EventType(StrEnum):
     SOLD_OUT = "sold_out"
     PRICE_DROP = "price_drop"
     NEW_PRODUCT = "new_product"
+
+
+class WatchType(StrEnum):
+    PRODUCT = "product"
+    STYLE_CODE = "style_code"
+    KEYWORD = "keyword"
 
 
 class Store(Base):
@@ -198,3 +205,31 @@ class UserSession(Base):
     expires_at: Mapped[datetime] = mapped_column(UTCDateTime)
 
     user: Mapped[User] = relationship(back_populates="sessions", lazy="raise")
+
+
+class Watch(Base):
+    """Something a user wants alerts for: a product, a style code, or a keyword set.
+
+    One table for all three types (slice B uses `product`, slice C the other two). The
+    webhook to alert is added with the webhooks table (slice D).
+    """
+
+    __tablename__ = "watches"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    # Deleting a user deletes their watches.
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    type: Mapped[WatchType] = mapped_column(str_enum(WatchType))
+    # Set for product watches only. The hot loop polls every product with an active watch.
+    product_id: Mapped[int | None] = mapped_column(ForeignKey("products.id"), index=True)
+    # The style code or raw keyword text for style_code and keyword watches.
+    query: Mapped[str | None] = mapped_column(String(500))
+    keywords_pos: Mapped[list[str]] = mapped_column(JSON, default=list)
+    keywords_neg: Mapped[list[str]] = mapped_column(JSON, default=list)
+    # None means every store / every size. Sizes are variant external ids.
+    store_ids: Mapped[list[int] | None] = mapped_column(JSON)
+    sizes: Mapped[list[str] | None] = mapped_column(JSON)
+    event_types: Mapped[list[str]] = mapped_column(JSON)
+    max_price_cents: Mapped[int | None]
+    active: Mapped[bool] = mapped_column(default=True)
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime, default=utcnow)
