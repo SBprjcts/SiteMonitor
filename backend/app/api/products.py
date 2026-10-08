@@ -12,6 +12,7 @@ from app.db.session import get_session
 from app.monitor.adapters.base import ProductNotFoundError, StoreAdapter
 from app.monitor.adapters.shopify import ShopifyAdapter, parse_product_url
 from app.monitor.http import create_http_client
+from app.monitor.ratelimit import StoreBusyError
 from app.monitor.recorder import record_product
 from app.schemas.products import EventOut, ProductLookup, ProductOut
 
@@ -69,6 +70,12 @@ async def lookup_product(
     except ProductNotFoundError:
         raise HTTPException(
             status.HTTP_404_NOT_FOUND, f"Couldn't find that product on {store.name}"
+        ) from None
+    except StoreBusyError:
+        # The rate limiter is backing off from this store, so nothing was sent.
+        raise HTTPException(
+            status.HTTP_503_SERVICE_UNAVAILABLE,
+            f"{store.name} is limiting requests right now. Try again in a few minutes.",
         ) from None
     except httpx.HTTPStatusError as exc:
         busy = exc.response.status_code == 429

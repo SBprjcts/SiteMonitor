@@ -29,6 +29,7 @@ This file is the source of truth for architecture and conventions. If you change
 Notes:
 - The variant `sku` is **not** the style code. On Kith, for example, it is an internal number (`2000428323`). Style codes appear in the title, handle, tags, or `body_html`, so match across all of those fields.
 - Prices differ between the two endpoints: `.js` gives integer cents, while `products.json` gives a dollar string. The adapter normalizes both to `price_cents: int`. All stores are CAD.
+- **Identify honestly, and expect the `.js` endpoint to be the touchy one.** With a fake Chrome User-Agent, Cloudflare (in front of every Shopify store) answered most `.js` requests with `429` and `Retry-After: 60`, while `products.json` and curl were fine: it can tell a client that isn't the browser it names. Measured 2026-10-08 on two machines, requests 6s apart: fake Chrome UA, 2 of 3 and 4 of 5 refused; `SiteMonitor/0.1 (+repo url)`, 1 of 9 and 0 of 4 refused, then 6 of 6 CLI runs succeeded. So `USER_AGENT` in `monitor/http.py` says who we are. `.js` can still be refused now and then, so the hot loop must honor `Retry-After`, and the catalog sweep stays the dependable source. `/products/{handle}.json` is not a substitute: its variants have no `available` field.
 
 ## Architecture
 
@@ -61,10 +62,14 @@ React dashboard ──REST + SSE──► FastAPI (app/api)
 Intervals are configurable per store.
 
 ### Per-domain rate limiter (`monitor/ratelimit.py`)
-- A token bucket per domain (default about 1 request every 2 seconds) with random jitter. All loops for a domain share the same bucket.
-- On 429 or 5xx responses: exponential backoff, and honor `Retry-After` when the store sends it. Solestop, for example, returns intermittent 503s.
-- A circuit breaker: after N consecutive failures the store is marked `degraded` and polled slowly until it recovers. Store health (`last_ok_at`, `consecutive_errors`, `status`) is visible in the UI.
-- Send a normal browser User-Agent. Never parallelize requests to the same domain.
+- One shared `limiter` per process, keyed by store (`www.foosh.ca` and `foosh.ca` are one store). It sits under the HTTP client as a transport (`RateLimitedTransport`, wired up in `monitor/http.py`), so every client from `create_http_client()` shares it, and each hop of a redirect counts.
+- Spacing: one request per store every `DOMAIN_MIN_REQUEST_GAP_S` (default 2s) plus up to 25% jitter, and never two at once. This is a token bucket holding one token.
+- Backoff is tracked **per store and endpoint** (`Endpoint.PRODUCT` for `/products/{handle}.js`, `Endpoint.CATALOG` for everything else), because Shopify throttles them separately: a refused product page must not stall the catalog sweep or mark the whole store degraded. Spacing stays per store.
+- On 429, 403, 5xx, or a connection error: exponential backoff (5s, doubling, up to 5 min), and honor `Retry-After` when the store sends it. A good response resets it. A 404 is a normal answer, not a failure. Solestop, for example, returns intermittent 503s.
+- **It fails fast instead of making callers wait.** If a store's next slot is more than 10s away, the request raises `StoreBusyError` and is not sent. The product lookup turns that into a 503; the polling loops should skip that store until the next tick.
+- A circuit breaker: after 5 consecutive failures an endpoint counts as `degraded` and is polled at most once a minute until one request succeeds. The limiter keeps this in memory (`limiter.health(domain, endpoint)`); the scheduler copies the **catalog's** health onto the `stores` row (`last_ok_at`, `consecutive_errors`, `status`), which the UI shows.
+- The state is per process. Locally that is one process. On the VPS the API and the monitor are separate containers and do not share a budget, so user lookups there are extra requests on top of the monitor's.
+- Send our own User-Agent (`SiteMonitor/<version> (+repo url)`), never a browser's. Never parallelize requests to the same domain.
 
 ### Diff engine (`monitor/diff.py`)
 Compares the freshly fetched variant state with the stored state and emits `events`:
@@ -265,7 +270,7 @@ Each slice is end to end: backend, API, UI, and tests. Claim a slice by assignin
 - Every user-owned query must filter by `user_id`. There must be no cross-user data leaks.
 - **Stores are shared, so only admins can enable or disable one** (`PATCH /api/stores/{id}` returns 403 for everyone else). Any logged-in user can add a store: the probe checks it first, and adding one doesn't affect other users. Admins are made by hand with `python -m app.make_admin <email>`; there is no UI for it.
 - **Every API route needs a login except `/api/auth/*` and `/api/health`.** Add new routers under `logged_in` in `app/main.py`, and take `user: CurrentUser` when the endpoint needs to know who is asking.
-- All outbound HTTP to stores goes through the rate limiter. No direct `httpx.get` in feature code.
+- All outbound HTTP to stores goes through the rate limiter: use `create_http_client()` from `monitor/http.py`. No direct `httpx.get` or bare `httpx.AsyncClient()` in feature code.
 - Monitor code must not import API code (see Process model).
 - **One domain rule everywhere:** store domains are lowercase hostnames without `www.` (`https://www.NRML.ca/x` → `nrml.ca`). Backend code uses `normalize_domain()` from `app/stores/domain.py`; the frontend mirrors it in `normalizeDomain()`. Otherwise the same store can be added twice.
 - Requests to a host a user typed (like the add-store probe) must refuse private, loopback and metadata addresses, including after redirects. See `app/stores/probe.py`.

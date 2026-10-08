@@ -22,6 +22,7 @@ from app.db.session import SessionLocal, engine
 from app.monitor.adapters.base import ProductNotFoundError, StoreAdapter
 from app.monitor.adapters.shopify import ShopifyAdapter, parse_product_url
 from app.monitor.http import create_http_client
+from app.monitor.ratelimit import StoreBusyError
 from app.monitor.recorder import record_product
 
 
@@ -95,6 +96,9 @@ async def main(argv: list[str] | None = None) -> int:
         return 2
     except ProductNotFoundError as exc:
         print(f"error: product not found: {exc}", file=sys.stderr)
+        return 1
+    except StoreBusyError as exc:
+        print(f"error: {exc}", file=sys.stderr)
         return 1
     except httpx.HTTPStatusError as exc:
         code = exc.response.status_code
