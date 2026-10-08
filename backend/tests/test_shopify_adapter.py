@@ -171,3 +171,11 @@ async def test_fetch_catalog_past_last_page_is_empty(adapter):
     respx.get("https://nrml.ca/products.json").respond(json={"products": []})
 
     assert await adapter.fetch_catalog_page("nrml.ca", 99) == []
+
+
+def test_variants_are_numbered_in_store_order():
+    for parsed in (
+        parse_product_js(load("jdsports_product.js.json"), "jdsports.ca"),
+        parse_catalog_product(load("kith_catalog.json")["products"][0], "ca.kith.com"),
+    ):
+        assert [v.position for v in parsed.variants] == list(range(len(parsed.variants)))

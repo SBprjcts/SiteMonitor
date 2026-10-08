@@ -299,3 +299,20 @@ async def test_events_limit(api, kith, session):
 
 async def test_events_for_missing_product(api):
     assert (await api.get("/products/999/events")).status_code == 404
+
+
+async def test_sizes_stay_in_store_order_when_one_is_added_later(api, session, adapter):
+    session.add(make_store())
+    await session.commit()
+    adapter.product = product(variant("1", size="9"), variant("3", size="10"))
+    await api.post("/products/lookup", json={"url": URL})
+
+    # The store adds a 9.5. It gets the highest id, but belongs in the middle.
+    adapter.product = product(
+        variant("1", size="9"), variant("2", size="9.5"), variant("3", size="10")
+    )
+    response = await api.post("/products/lookup", json={"url": URL})
+
+    assert [v["size"] for v in response.json()["variants"]] == ["9", "9.5", "10"]
+    detail = await api.get(f"/products/{response.json()['id']}")
+    assert [v["size"] for v in detail.json()["variants"]] == ["9", "9.5", "10"]

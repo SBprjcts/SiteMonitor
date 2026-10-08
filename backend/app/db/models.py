@@ -130,7 +130,9 @@ class Product(Base):
     last_seen_at: Mapped[datetime] = mapped_column(UTCDateTime, default=utcnow)
 
     store: Mapped[Store] = relationship(back_populates="products", lazy="raise")
-    variants: Mapped[list["Variant"]] = relationship(back_populates="product", lazy="raise")
+    variants: Mapped[list["Variant"]] = relationship(
+        back_populates="product", lazy="raise", order_by="Variant.position, Variant.id"
+    )
 
 
 class Variant(Base):
@@ -146,6 +148,9 @@ class Variant(Base):
     sku: Mapped[str | None] = mapped_column(String(100))
     price_cents: Mapped[int]
     available: Mapped[bool]
+    # Where this size sits in the store's own order (0 = first). A size the store adds
+    # later gets a higher id, so ids can't be used for ordering.
+    position: Mapped[int] = mapped_column(default=0, server_default="0")
     updated_at: Mapped[datetime] = mapped_column(UTCDateTime, default=utcnow)
 
     product: Mapped[Product] = relationship(back_populates="variants", lazy="raise")

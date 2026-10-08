@@ -79,8 +79,9 @@ def parse_product_js(data: dict[str, Any], domain: str) -> ProductData:
                 sku=v.get("sku") or None,
                 price_cents=int(v["price"]),
                 available=v["available"],
+                position=position,
             )
-            for v in data["variants"]
+            for position, v in enumerate(data["variants"])
         ],
     )
 
@@ -105,8 +106,9 @@ def parse_catalog_product(data: dict[str, Any], domain: str) -> ProductData:
                 sku=v.get("sku") or None,
                 price_cents=dollars_to_cents(v["price"]),
                 available=v["available"],
+                position=position,
             )
-            for v in data["variants"]
+            for position, v in enumerate(data["variants"])
         ],
     )
 
