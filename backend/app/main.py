@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.api import health, stores
+from app.api import health, products, stores
 from app.config import REPO_ROOT, get_settings
 from app.db.session import engine
 
@@ -44,6 +44,7 @@ def create_app() -> FastAPI:
     app = FastAPI(title="SiteMonitor", lifespan=lifespan)
     app.include_router(health.router, prefix="/api")
     app.include_router(stores.router, prefix="/api")
+    app.include_router(products.router, prefix="/api")
 
     # Mounted last so /api routes take priority. Run `npm run build` in frontend/ first.
     if FRONTEND_DIST.is_dir():

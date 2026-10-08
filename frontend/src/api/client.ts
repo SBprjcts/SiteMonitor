@@ -1,5 +1,5 @@
-// Typed API client. Each function calls the backend, or the in-memory mock when
-// VITE_USE_MOCKS is not "false".
+// Typed API client. Each function calls the backend, or the in-memory mock for sections
+// whose backend endpoints don't exist yet (see VITE_USE_MOCKS in .env.example).
 
 import { parseProductUrl } from "@/lib/shopify"
 
@@ -13,7 +13,32 @@ import type {
   WatchListItem,
 } from "./types"
 
-export const USE_MOCKS = import.meta.env.VITE_USE_MOCKS !== "false"
+const SECTIONS = ["stores", "products", "watches"] as const
+type Section = (typeof SECTIONS)[number]
+
+/**
+ * VITE_USE_MOCKS: unset or "true" mocks every section, "false" mocks none, and a list
+ * like "watches" mocks only those sections, so finished endpoints can use real data
+ * while the rest stay mocked.
+ */
+function parseMockedSections(value: string | undefined): Set<Section> {
+  if (value === undefined || value.trim() === "" || value.trim() === "true") {
+    return new Set(SECTIONS)
+  }
+  if (value.trim() === "false") return new Set()
+  return new Set(
+    value
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s): s is Section => (SECTIONS as readonly string[]).includes(s)),
+  )
+}
+
+const MOCKED = parseMockedSections(import.meta.env.VITE_USE_MOCKS)
+
+export function isMocked(section: Section): boolean {
+  return MOCKED.has(section)
+}
 
 export class ApiError extends Error {
   status: number
@@ -52,12 +77,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 // Stores
 
 export function listStores(): Promise<Store[]> {
-  if (USE_MOCKS) return delay(mockDb.stores)
+  if (isMocked("stores")) return delay(mockDb.stores)
   return request("/stores")
 }
 
 export function updateStore(id: number, patch: Pick<Store, "enabled">): Promise<Store> {
-  if (USE_MOCKS) {
+  if (isMocked("stores")) {
     const store = mockDb.stores.find((s) => s.id === id)
     if (!store) return Promise.reject(new ApiError(404, "Store not found"))
     Object.assign(store, patch)
@@ -68,7 +93,7 @@ export function updateStore(id: number, patch: Pick<Store, "enabled">): Promise<
 
 /** Adds a Shopify store. The backend validates it by probing /products.json. */
 export function addStore(input: { domain: string; name?: string }): Promise<Store> {
-  if (USE_MOCKS) return delay(null, 800).then(() => mockAddStore(input))
+  if (isMocked("stores")) return delay(null, 800).then(() => mockAddStore(input))
   return request("/stores", { method: "POST", body: JSON.stringify(input) })
 }
 
@@ -96,7 +121,7 @@ function mockAddStore({ domain, name }: { domain: string; name?: string }): Stor
 
 /** Fetches a product by its store URL so the user can pick sizes to watch. */
 export function lookupProduct(url: string): Promise<ProductDetail> {
-  if (USE_MOCKS) return delay(null, 700).then(() => mockLookup(url))
+  if (isMocked("products")) return delay(null, 700).then(() => mockLookup(url))
   return request("/products/lookup", { method: "POST", body: JSON.stringify({ url }) })
 }
 
@@ -121,13 +146,13 @@ function mockProductDetail(id: number): ProductDetail {
 }
 
 export function getProduct(id: number): Promise<ProductDetail> {
-  if (USE_MOCKS) return delay(null).then(() => mockProductDetail(id))
+  if (isMocked("products")) return delay(null).then(() => mockProductDetail(id))
   return request(`/products/${id}`)
 }
 
 /** Newest first. */
 export function listProductEvents(productId: number): Promise<StockEvent[]> {
-  if (USE_MOCKS) {
+  if (isMocked("products")) {
     const events = mockDb.events
       .filter((e) => e.product_id === productId)
       .sort((a, b) => b.occurred_at.localeCompare(a.occurred_at))
@@ -139,17 +164,14 @@ export function listProductEvents(productId: number): Promise<StockEvent[]> {
 // Watches
 
 export function listWatches(): Promise<WatchListItem[]> {
-  if (USE_MOCKS) {
-    const items = mockDb.watches
-      .map((w) => ({ ...w, product: w.product_id ? mockProductDetail(w.product_id) : null }))
-      .sort((a, b) => b.created_at.localeCompare(a.created_at))
-    return delay(items)
+  if (isMocked("watches")) {
+    return mockListWatches()
   }
   return request("/watches")
 }
 
 export function createWatch(input: NewProductWatch): Promise<Watch> {
-  if (USE_MOCKS) {
+  if (isMocked("watches")) {
     const watch: Watch = {
       id: mockNextId(),
       query: null,
@@ -168,7 +190,7 @@ export function createWatch(input: NewProductWatch): Promise<Watch> {
 }
 
 export function updateWatch(id: number, patch: Pick<Watch, "active">): Promise<Watch> {
-  if (USE_MOCKS) {
+  if (isMocked("watches")) {
     const watch = mockDb.watches.find((w) => w.id === id)
     if (!watch) return Promise.reject(new ApiError(404, "Watch not found"))
     Object.assign(watch, patch)
@@ -178,9 +200,28 @@ export function updateWatch(id: number, patch: Pick<Watch, "active">): Promise<W
 }
 
 export function deleteWatch(id: number): Promise<void> {
-  if (USE_MOCKS) {
+  if (isMocked("watches")) {
     mockDb.watches = mockDb.watches.filter((w) => w.id !== id)
     return delay(undefined)
   }
   return request(`/watches/${id}`, { method: "DELETE" })
+}
+
+/**
+ * Mocked watches can point at real products (when only watches are mocked), so the
+ * product is fetched through getProduct. Watches whose product doesn't exist in the
+ * current data source (like the mock's sample watch, with real products) are skipped.
+ */
+async function mockListWatches(): Promise<WatchListItem[]> {
+  const watches = await delay(mockDb.watches)
+  const items = await Promise.all(
+    watches.map(async (w) => {
+      if (!w.product_id) return { ...w, product: null }
+      const product = await getProduct(w.product_id).catch(() => null)
+      return product ? { ...w, product } : null
+    }),
+  )
+  return items
+    .filter((item): item is WatchListItem => item !== null)
+    .sort((a, b) => b.created_at.localeCompare(a.created_at))
 }

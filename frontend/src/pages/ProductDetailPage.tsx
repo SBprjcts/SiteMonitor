@@ -106,10 +106,12 @@ export function ProductDetailPage() {
 
 function describeEvent(event: StockEvent, product: ProductDetail): string {
   const size = product.variants.find((v) => v.id === event.variant_id)?.size
+  const sizeLabel = size ? `Size ${size}` : ""
   if (event.type === "price_drop" && event.old_value && event.new_value) {
-    return `${formatPrice(Number(event.old_value))} → ${formatPrice(Number(event.new_value))}`
+    const prices = `${formatPrice(Number(event.old_value))} → ${formatPrice(Number(event.new_value))}`
+    return sizeLabel ? `${sizeLabel}: ${prices}` : prices
   }
-  return size ? `Size ${size}` : ""
+  return sizeLabel
 }
 
 function EventTimeline({ product }: { product: ProductDetail }) {
