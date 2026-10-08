@@ -6,7 +6,7 @@ from fastapi import Depends, FastAPI
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.api import auth, health, products, stores
+from app.api import auth, health, products, stores, watches
 from app.api.deps import get_current_user
 from app.config import REPO_ROOT, get_settings
 from app.db.session import engine
@@ -49,6 +49,7 @@ def create_app() -> FastAPI:
     logged_in = [Depends(get_current_user)]
     app.include_router(stores.router, prefix="/api", dependencies=logged_in)
     app.include_router(products.router, prefix="/api", dependencies=logged_in)
+    app.include_router(watches.router, prefix="/api", dependencies=logged_in)
 
     # Mounted last so /api routes take priority. Run `npm run build` in frontend/ first.
     if FRONTEND_DIST.is_dir():
