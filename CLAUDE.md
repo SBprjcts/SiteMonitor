@@ -180,7 +180,7 @@ run.ps1                     one-command local start on Windows
 | `products` | id, store_id, external_id, handle, title, vendor, image_url, url, search_text, first_seen_at, last_seen_at. Unique on (store_id, external_id) |
 | `variants` | id, product_id, external_id, size, sku, price_cents, available, updated_at. Unique on (product_id, external_id) |
 | `events` | id, store_id, product_id, variant_id (nullable), type, old_value, new_value, occurred_at |
-| `watches` | id, user_id, type (`product` \| `style_code` \| `keyword`), product_id (nullable), query, keywords_pos (json), keywords_neg (json), store_ids (json, null means all), sizes (json, null means all), event_types (json), max_price_cents (nullable), webhook_id, active, created_at |
+| `watches` | id, user_id, type (`product` \| `style_code` \| `keyword`), product_id (nullable), query, keywords_pos (json), keywords_neg (json), store_ids (json, null means all), sizes (json, null means all), event_types (json), max_price_cents (nullable), webhook_id (added with the `webhooks` table in slice D), active, created_at |
 | `webhooks` | id, user_id, name, url, role_id (nullable) |
 | `alerts` | id, watch_id, event_id, webhook_id, status (`queued` \| `sent` \| `failed`), sent_at, error. Unique on (watch_id, event_id) |
 
