@@ -2,6 +2,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 from sqlalchemy import func, select
+from sqlalchemy.orm import selectinload
 
 from app.db.models import Event, EventType, Product, Store, Variant
 from app.monitor.recorder import record_product
@@ -113,3 +114,33 @@ async def test_size_added_later_takes_its_place_in_the_store_order(session, stor
     assert {k: v[0] for k, v in by_id.items()} == {"9": 0, "9.5": 1, "10": 2}
     # Moving down the list isn't a stock or price change.
     assert by_id["10"][1] == T0
+
+
+async def test_removed_sizes_move_after_the_sizes_still_on_sale(session, store):
+    await record_product(session, store, product(variant("9"), variant("10"), variant("11")), T0)
+
+    # The store drops 9 and 10 and lists a new size first, reusing position 0.
+    later = T0 + timedelta(minutes=1)
+    await record_product(session, store, product(variant("8"), variant("11")), later)
+
+    saved = await session.scalar(
+        select(Product)
+        .options(selectinload(Product.variants))
+        .execution_options(populate_existing=True)
+    )
+    assert [(v.external_id, v.position) for v in saved.variants] == [
+        ("8", 0),
+        ("11", 1),
+        ("9", 2),
+        ("10", 3),
+    ]
+
+    # Nothing changes on the next fetch: the removed sizes keep their place at the end.
+    await record_product(session, store, product(variant("8"), variant("11")), later)
+    positions = await session.execute(select(Variant.external_id, Variant.position))
+    assert {external_id: position for external_id, position in positions} == {
+        "8": 0,
+        "11": 1,
+        "9": 2,
+        "10": 3,
+    }
