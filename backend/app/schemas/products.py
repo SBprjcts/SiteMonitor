@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict
 
 from app.db.models import EventType
 from app.schemas.stores import StoreOut
@@ -33,14 +33,9 @@ class ProductOut(BaseModel):
     url: str
     first_seen_at: datetime
     last_seen_at: datetime
+    # In the store's size order (Product.variants is ordered by Variant.position).
     variants: list[VariantOut]
     store: StoreOut
-
-    @field_validator("variants")
-    @classmethod
-    def _store_order(cls, variants: list[VariantOut]) -> list[VariantOut]:
-        # Sizes were inserted in the store's order, so id order is the size order.
-        return sorted(variants, key=lambda v: v.id)
 
 
 class ProductLookup(BaseModel):

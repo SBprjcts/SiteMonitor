@@ -70,6 +70,7 @@ async def record_product(
             product.variants.append(variant)
             variants[data.external_id] = variant
         _update_variant(variant, data, now)
+        variant.position = data.position
 
     # A size that vanished from the store is kept (for history) but marked unavailable.
     fresh_ids = {v.external_id for v in fresh.variants}
@@ -129,6 +130,7 @@ def _to_product_data(product: Product) -> ProductData:
                 sku=v.sku,
                 price_cents=v.price_cents,
                 available=v.available,
+                position=v.position,
             )
             for v in product.variants
         ],

@@ -16,6 +16,8 @@ class VariantData(BaseModel):
     sku: str | None
     price_cents: int
     available: bool
+    # Where this size sits in the store's own order (0 = first), for display.
+    position: int
 
 
 class ProductData(BaseModel):

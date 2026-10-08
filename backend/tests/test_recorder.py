@@ -97,3 +97,19 @@ async def test_same_product_id_at_two_stores_is_two_products(session, store):
 
     assert result.first_sighting is True
     assert await count(session, Product) == 2
+
+
+async def test_size_added_later_takes_its_place_in_the_store_order(session, store):
+    await record_product(session, store, product(variant("9"), variant("10")), T0)
+
+    # The store adds a 9.5 between the two existing sizes.
+    later = T0 + timedelta(minutes=1)
+    await record_product(
+        session, store, product(variant("9"), variant("9.5"), variant("10")), later
+    )
+
+    rows = await session.execute(select(Variant.external_id, Variant.position, Variant.updated_at))
+    by_id = {external_id: (position, updated_at) for external_id, position, updated_at in rows}
+    assert {k: v[0] for k, v in by_id.items()} == {"9": 0, "9.5": 1, "10": 2}
+    # Moving down the list isn't a stock or price change.
+    assert by_id["10"][1] == T0

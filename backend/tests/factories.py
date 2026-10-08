@@ -12,6 +12,7 @@ def variant(
         sku=None,
         price_cents=price,
         available=available,
+        position=0,  # product() numbers its variants in the order given
     )
 
 
@@ -25,5 +26,5 @@ def product(*variants: VariantData, external_id: str = "7001") -> ProductData:
         url="https://ca.kith.com/products/gel-lyte-iii",
         tags=[],
         description_html="",
-        variants=list(variants),
+        variants=[v.model_copy(update={"position": i}) for i, v in enumerate(variants)],
     )
