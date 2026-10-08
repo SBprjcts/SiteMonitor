@@ -73,9 +73,13 @@ async def record_product(
         variant.position = data.position
 
     # A size that vanished from the store is kept (for history) but marked unavailable.
+    # It moves after the sizes still on sale, so it never shares a position with one.
     fresh_ids = {v.external_id for v in fresh.variants}
-    for external_id, variant in variants.items():
-        if external_id not in fresh_ids and variant.available:
+    removed = [v for external_id, v in variants.items() if external_id not in fresh_ids]
+    removed.sort(key=lambda v: (v.position, v.id))
+    for position, variant in enumerate(removed, start=len(fresh.variants)):
+        variant.position = position
+        if variant.available:
             variant.available = False
             variant.updated_at = now
 
