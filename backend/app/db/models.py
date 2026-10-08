@@ -167,3 +167,34 @@ class Event(Base):
     old_value: Mapped[str | None] = mapped_column(String(100))
     new_value: Mapped[str | None] = mapped_column(String(100))
     occurred_at: Mapped[datetime] = mapped_column(UTCDateTime, default=utcnow, index=True)
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    # Always stored lowercase, so "A@x.com" and "a@x.com" can't both register.
+    email: Mapped[str] = mapped_column(String(320), unique=True)
+    # An argon2 hash, never the password itself.
+    password_hash: Mapped[str] = mapped_column(String(255))
+    # Admins can enable or disable stores, which are shared by every user.
+    is_admin: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime, default=utcnow)
+
+    sessions: Mapped[list["UserSession"]] = relationship(
+        back_populates="user", lazy="raise", passive_deletes=True
+    )
+
+
+class UserSession(Base):
+    """One logged-in browser. Named UserSession so it isn't confused with a DB session."""
+
+    __tablename__ = "sessions"
+
+    # The random token the browser sends back in its cookie.
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    # Deleting a user logs them out everywhere.
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    expires_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+    user: Mapped[User] = relationship(back_populates="sessions", lazy="raise")
