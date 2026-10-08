@@ -11,5 +11,7 @@ npm run build
 npm run gen:api    # regenerate src/api/schema.d.ts from the running backend
 ```
 
-Until the backend exposes its endpoints, the API client serves mock data from `src/api/mock.ts`.
-Set `VITE_USE_MOCKS=false` in `.env` to call the real backend.
+The API client can serve mock data from `src/api/mock.ts`, per section. `VITE_USE_MOCKS` in `.env`
+controls it: `true` (default) mocks everything, `false` mocks nothing, and a list such as
+`watches` mocks only those sections. Stores and products have real endpoints; watches don't yet,
+so against the real backend use `VITE_USE_MOCKS=watches`.
