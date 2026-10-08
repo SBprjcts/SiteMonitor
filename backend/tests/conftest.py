@@ -4,6 +4,8 @@ import os
 os.environ.setdefault("SESSION_SECRET", "test-secret")
 os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///:memory:")
 os.environ.setdefault("MONITOR_ENABLED", "false")
+# No waiting between requests to the same store. test_ratelimit.py sets its own spacing.
+os.environ.setdefault("DOMAIN_MIN_REQUEST_GAP_S", "0")
 
 import httpx  # noqa: E402
 import pytest  # noqa: E402
@@ -14,6 +16,14 @@ from app.api.deps import get_current_user  # noqa: E402
 from app.db.models import Base, User  # noqa: E402
 from app.db.session import create_engine  # noqa: E402
 from app.main import app  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+def fresh_rate_limiter():
+    """The limiter is process-wide, so one test's backoff would leak into the next."""
+    from app.monitor.ratelimit import limiter
+
+    limiter.reset()
 
 
 @pytest.fixture

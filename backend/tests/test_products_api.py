@@ -13,6 +13,7 @@ from app.db.session import get_session
 from app.main import app
 from app.monitor.adapters.base import ProductNotFoundError
 from app.monitor.adapters.shopify import ShopifyAdapter
+from app.monitor.ratelimit import StoreBusyError
 from app.monitor.recorder import record_product
 from tests.conftest import log_in_as
 from tests.factories import product, variant
@@ -189,6 +190,12 @@ async def test_lookup_refuses_paused_and_unsupported_stores(api, session, adapte
             "Kith Canada returned an error (500)",
         ),
         (httpx.ConnectError("boom"), 502, "Couldn't reach Kith Canada"),
+        (
+            # The rate limiter refused to send: the store is backing off.
+            StoreBusyError("ca.kith.com", 120),
+            503,
+            "Kith Canada is limiting requests right now. Try again in a few minutes.",
+        ),
     ],
 )
 async def test_lookup_store_errors(api, kith, adapter, session, error, status, detail):
